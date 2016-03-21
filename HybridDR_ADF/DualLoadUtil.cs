@@ -19,21 +19,34 @@ namespace HybridDR_ADF
 {
     class DualLoadUtil
     {
-        private DataFactoryManagementClient client;
+        private static DataFactoryManagementClient client;
 
         public DataFactoryManagementClient getClient()
         {
             return (client);
         }
 
-        public DataFactoryManagementClient createDataFactoryManagementClient()
+        public static DataFactoryManagementClient createDataFactoryManagementClient()
         {
+            if (client != null)
+            {
+                Console.WriteLine("Reusing DataFactoryManagementClient");
+                return (client);
+            }
+            Console.WriteLine("Creating new DataFactoryManagementClient");
             TokenCloudCredentials aadTokenCredentials = new TokenCloudCredentials(DualLoadConfig.SUBSCRIPTION_ID, GetAuthorizationHeader(DualLoadConfig.AD_TENANT_ID));
 
             Uri resourceManagerUri = new Uri(ConfigurationManager.AppSettings["ResourceManagerEndpoint"]);
 
             // create data factory management client
             return (client = new DataFactoryManagementClient(aadTokenCredentials, resourceManagerUri));
+        }
+
+        public void tearDown(DataFactoryManagementClient client, String pipelineName)
+        {
+            Console.WriteLine("Tearing down " + pipelineName);
+            //client.DataFactories.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name);
+            client.Pipelines.BeginDelete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, pipelineName);
         }
 
 

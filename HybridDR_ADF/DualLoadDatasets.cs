@@ -25,6 +25,43 @@ namespace HybridDR_ADF
             this.client = client;
         }
 
+        public void createDataSet_ETLControl()
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ETL_Control);
+            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                new DatasetCreateOrUpdateParameters()
+                {
+                    Dataset = new Dataset()
+                    {
+                        Name = DualLoadConfig.DATASET_ETL_Control,
+                        Properties = new DatasetProperties()
+                        {
+                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
+                            TypeProperties = new AzureSqlTableDataset
+                            {
+                                TableName = "dbo.ETLControl",
+                            }
+                            ,
+                            External = true,
+                            Availability = new Availability()
+                            {
+                                Frequency = SchedulePeriod.Hour,
+                                Interval = 1,
+                            }
+                            //,
+
+                            //Policy = new Policy()
+                            //{
+                            //    Validation = new ValidationPolicy()
+                            //    {
+                            //        MinimumRows = 1
+                            //    }
+                            //}
+                        }
+                    }
+                });
+        }
+
         public void createDataSet_root()
         {
             Console.WriteLine("Creating " + DualLoadConfig.DATASET_ROOT);
@@ -94,7 +131,8 @@ namespace HybridDR_ADF
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
                             TypeProperties = new AzureSqlTableDataset
                             {
-                                TableName = "Output"
+                                TableName = "Output",
+
 
                             }
                             ,

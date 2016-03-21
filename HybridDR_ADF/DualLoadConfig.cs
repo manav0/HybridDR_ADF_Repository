@@ -31,6 +31,7 @@ namespace HybridDR_ADF
         public static string DATASET_ROOT = "Dataset-Root";
         public static string DATASET_ToBeProcessedPath = "Dataset-ToBeProcessedPath";
         public static string DATASET_SQLOUTPUT = "Dataset-SqlOutput";
+        public static string DATASET_ETL_Control = "Dataset-ETLControl";
         public static string DATASET_Destination = "Dataset-BlobDestination";
         //public static string DATASET_PDW = "clouddr-pdw-ds";
 
@@ -40,7 +41,10 @@ namespace HybridDR_ADF
         public static string ACTIVITY_MOVE_FILES = "Activity-MoveFiles";
 
         public static string TABLE_PDW = "PDW";
-        public static string PIPELINE_INIT_Name = "Pipeline-Init";
+
+        public static string PIPELINE_INIT = "Pipeline-Init";
+        public static string PIPELINE_LOADPROCESS = "Pipeline-LoadProcess";
+        public static string PIPELINE_ARCHIVE = "Pipeline-Archive";
 
 
         public static string CONNECTION_STRING_ControlDB = "Server=tcp:clouddr-dbserver.database.windows.net,1433;Database=clouddr-control-db;User ID=clouddr-dbserver-admin@clouddr-dbserver;Password=Welcome1;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";

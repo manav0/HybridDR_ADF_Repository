@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>HybridDR_ADF.DualLoadInit</StartupObject>
+    <StartupObject>HybridDR_ADF.InitPipeline</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hyak.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -99,7 +99,11 @@
   <ItemGroup>
     <Compile Include="DualLoadConfig.cs" />
     <Compile Include="DualLoadDatasets.cs" />
-    <Compile Include="DualLoadInit.cs" />
+    <Compile Include="ArchivePipeline.cs" />
+    <Compile Include="DualLoadMain.cs" />
+    <Compile Include="DualLoadActivities.cs" />
+    <Compile Include="LoadProcessPipeline.cs" />
+    <Compile Include="InitPipeline.cs" />
     <Compile Include="DualLoadUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

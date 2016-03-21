@@ -16,21 +16,17 @@ using Microsoft.Azure;
 
 namespace HybridDR_ADF
 {
-    class DualLoadInit
+    class LoadProcessPipeline
     {
         static void Main(string[] args)
         {
-            DualLoadInit dualLoadInit = new DualLoadInit();
+            LoadProcessPipeline loadProcessPipeline = new LoadProcessPipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = util.createDataFactoryManagementClient();
-            dualLoadInit.tearDown(client);
-            //return;
-            util.createDataFactory();
-            util.createLinkedService_ControlDB();
-            util.createLinkedService_BlobStorage();
-            dualLoadInit.createDatasets(client);
-            dualLoadInit.createPipeline_Init(util);
+            DataFactoryManagementClient client = DualLoadUtil.createDataFactoryManagementClient();
+            util.tearDown(client, DualLoadConfig.PIPELINE_LOADPROCESS);
+            loadProcessPipeline.createDatasets(client);
+            loadProcessPipeline.createPipeline(util, DualLoadConfig.PIPELINE_LOADPROCESS);
 
             Console.WriteLine("\nPress any key to exit.");
             Console.ReadKey();
@@ -40,24 +36,15 @@ namespace HybridDR_ADF
         private void createDatasets(DataFactoryManagementClient client)
         {
             DualLoadDatasets datasets = new DualLoadDatasets(client);
-
-            //dualLoadInit.createDataSet_PDW(client);
-            //dualLoadInit.createOutputDataSet(client);
-            //util.createDataSet_BlobStore(client);
+            datasets.createDataSet_ETLControl();
             datasets.createDataSet_SqlOutput();
             datasets.createDataSet_root();
             datasets.createDataSet_ToBeProcessedPath();
         }
 
-        private void tearDown(DataFactoryManagementClient client)
+        private void createPipeline(DualLoadUtil util, String pipelineName)
         {
-            Console.WriteLine("Tearing down " + DualLoadConfig.DATAFACTORY_Name);
-            client.DataFactories.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name);
-        }
-
-        private void createPipeline_Init(DualLoadUtil util)
-        {
-            Console.WriteLine("Creating " + DualLoadConfig.PIPELINE_INIT_Name);
+            Console.WriteLine("Creating " + pipelineName);
             DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
             DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
 
@@ -67,7 +54,7 @@ namespace HybridDR_ADF
                  {
                      Pipeline = new Pipeline()
                      {
-                         Name = DualLoadConfig.PIPELINE_INIT_Name,
+                         Name = pipelineName,
                          Properties = new PipelineProperties()
                          {
                              Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
@@ -78,9 +65,9 @@ namespace HybridDR_ADF
 
                              Activities = new List<Activity>()
                              {
-                                 //create_QuerySQL_ETLControl_Activity()
+                                 create_QuerySQL_ETLControl_Activity()
                                  //create_Record_SProc_Activity()
-                                 create_MoveFiles_Activity()
+                                 //create_MoveFiles_Activity()
         }
                          }
                      }
@@ -94,25 +81,32 @@ namespace HybridDR_ADF
         private Activity create_QuerySQL_ETLControl_Activity()
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_QuerySQL_ETLControl);
-            IDictionary<string, string> sprocParams = new Dictionary<string, string>();
-            sprocParams.Add("@ETLControlID", "1");
-            sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
 
             Activity activity = new Activity();
+
+            List<ActivityInput> activityInputs = new List<ActivityInput>();
+            ActivityInput activityInput = new ActivityInput();
+            activityInput.Name = DualLoadConfig.DATASET_ETL_Control;
+            activityInputs.Add(activityInput);
+            SqlSource source = new SqlSource();
+            source.SqlReaderQuery = "select id, LastRunDate, FileNameLike, FilePath, ToBeProcessedPath, ArchivePath from [dbo].[ETLControl]";
+
+
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
             activityOutput.Name = DualLoadConfig.DATASET_SQLOUTPUT;
             activityOutputs.Add(activityOutput);
+            SqlSink sink = new SqlSink();
 
-            SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
-            sqlserverStoredProcActivity.StoredProcedureName = "dbo.usp_RecordFilesToBeProcessed";
-            sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
-
+            CopyActivity copyActivity = new CopyActivity();
+            copyActivity.Source = source;
+            copyActivity.Sink = sink;
 
             activity.Name = DualLoadConfig.ACTIVITY_QuerySQL_ETLControl;
+            activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
-            activity.TypeProperties = sqlserverStoredProcActivity;
+            activity.TypeProperties = copyActivity;
 
             return (activity);
         }
