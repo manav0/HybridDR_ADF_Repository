@@ -20,9 +20,10 @@ namespace HybridDR_ADF
     class DualLoadActivities
     {
 
-        public Activity create_QuerySQL_ETLControl_Activity()
+        //INIT ACTIVITIES
+        public Activity create_Activity_Init_1()
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_QuerySQL_ETLControl);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_1);
 
             Activity activity = new Activity();
 
@@ -31,9 +32,7 @@ namespace HybridDR_ADF
             activityInput.Name = DualLoadConfig.DATASET_ETL_Control;
             activityInputs.Add(activityInput);
             SqlSource source = new SqlSource();
-            source.SqlReaderQuery = "$$Text.Format('select id, LastRunDate, FileNameLike, FilePath, ToBeProcessedPath, ArchivePath from [dbo].[ETLControl]')";
-
-
+            source.SqlReaderQuery = DualLoadConfig.QUERY_INIT_1;
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
@@ -45,7 +44,7 @@ namespace HybridDR_ADF
             copyActivity.Source = source;
             copyActivity.Sink = sink;
 
-            activity.Name = DualLoadConfig.ACTIVITY_QuerySQL_ETLControl;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_1;
             activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = copyActivity;
@@ -53,9 +52,9 @@ namespace HybridDR_ADF
             return (activity);
         }
 
-        public Activity create_Record_SProc_Activity()
+        public Activity create_Activity_Init_3()
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_SP_RECORD);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_3);
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
             sprocParams.Add("@ETLControlID", "1");
             sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
@@ -72,16 +71,17 @@ namespace HybridDR_ADF
             sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_SP_RECORD;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_3;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 
             return (activity);
         }
 
-        public Activity create_MoveFiles_Activity()
+
+        public Activity create_Activity_Init_4()
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_MOVE_FILES);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_4);
 
             Activity activity = new Activity();
 
@@ -108,11 +108,78 @@ namespace HybridDR_ADF
             //scheduler.Interval = 1;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_MOVE_FILES;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_4;
             activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = copyActivity;
             //activity.Scheduler = scheduler;
+
+            return (activity);
+        }
+
+        //LOAD PROCESS ACTIVITIES
+        public Activity create_Activity_LoadProcess_3()
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_3);
+
+            Activity activity = new Activity();
+
+            List<ActivityInput> activityInputs = new List<ActivityInput>();
+            ActivityInput activityInput = new ActivityInput();
+            activityInput.Name = DualLoadConfig.DATASET_ETL_ControlDetail;
+            activityInputs.Add(activityInput);
+            SqlSource source = new SqlSource();
+            source.SqlReaderQuery = (DualLoadConfig.QUERY_LOADPROCESS_3).Replace('?', '3');
+
+            // source.SqlReaderQuery = "Update [dbo].[ETLControlDetail] Set PrimaryAPSStatus = 2 Where Id = 3";
+            Console.WriteLine(" source.SqlReaderQuery= " + source.SqlReaderQuery);
+
+
+            List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
+            ActivityOutput activityOutput = new ActivityOutput();
+            activityOutput.Name = DualLoadConfig.DATASET_SQLOUTPUT;
+            activityOutputs.Add(activityOutput);
+            SqlSink sink = new SqlSink();
+
+            CopyActivity copyActivity = new CopyActivity();
+            copyActivity.Source = source;
+            copyActivity.Sink = sink;
+
+            activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_3;
+            activity.Inputs = activityInputs;
+            activity.Outputs = activityOutputs;
+            activity.TypeProperties = copyActivity;
+
+            return (activity);
+        }
+
+        public Activity create_Activity_LoadProcess_5()
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_5);
+
+            Activity activity = new Activity();
+
+            List<ActivityInput> activityInputs = new List<ActivityInput>();
+            ActivityInput activityInput = new ActivityInput();
+            activityInput.Name = DualLoadConfig.DATASET_ETL_Control;
+            activityInputs.Add(activityInput);
+            SqlSource source = new SqlSource();
+            source.SqlReaderQuery = DualLoadConfig.QUERY_LOADPROCESS_5.Replace('?', '3');
+
+            List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
+            ActivityOutput activityOutput = new ActivityOutput();
+            activityOutput.Name = DualLoadConfig.DATASET_SQLDUMMY;
+            activityOutputs.Add(activityOutput);
+            SqlSink sink = new SqlSink();
+
+            CopyActivity copyActivity = new CopyActivity();
+            copyActivity.Source = source;
+            copyActivity.Sink = sink;
+
+            activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_5;
+            activity.Inputs = activityInputs;
+            activity.Outputs = activityOutputs;
+            activity.TypeProperties = copyActivity;
 
             return (activity);
         }

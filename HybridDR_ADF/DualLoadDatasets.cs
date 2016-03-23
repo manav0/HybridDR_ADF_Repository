@@ -62,6 +62,43 @@ namespace HybridDR_ADF
                 });
         }
 
+        public void createDataSet_ETLControlDetail()
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ETL_ControlDetail);
+            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                new DatasetCreateOrUpdateParameters()
+                {
+                    Dataset = new Dataset()
+                    {
+                        Name = DualLoadConfig.DATASET_ETL_ControlDetail,
+                        Properties = new DatasetProperties()
+                        {
+                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
+                            TypeProperties = new AzureSqlTableDataset
+                            {
+                                TableName = "dbo.ETLControlDetail",
+                            }
+                            ,
+                            External = true,
+                            Availability = new Availability()
+                            {
+                                Frequency = SchedulePeriod.Hour,
+                                Interval = 1,
+                            }
+                            //,
+
+                            //Policy = new Policy()
+                            //{
+                            //    Validation = new ValidationPolicy()
+                            //    {
+                            //        MinimumRows = 1
+                            //    }
+                            //}
+                        }
+                    }
+                });
+        }
+
         public void createDataSet_root()
         {
             Console.WriteLine("Creating " + DualLoadConfig.DATASET_ROOT);
@@ -132,6 +169,45 @@ namespace HybridDR_ADF
                             TypeProperties = new AzureSqlTableDataset
                             {
                                 TableName = "Output",
+
+
+                            }
+                            ,
+                            //External = true,
+                            Availability = new Availability()
+                            {
+                                Frequency = SchedulePeriod.Hour,
+                                Interval = 1,
+                            }
+                            //,
+
+                            //Policy = new Policy()
+                            //{
+                            //    Validation = new ValidationPolicy()
+                            //    {
+                            //        MinimumRows = 1
+                            //    }
+                            //}
+                        }
+                    }
+                });
+        }
+
+        public void createDataSet_SqlDummy()
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLDUMMY);
+            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                new DatasetCreateOrUpdateParameters()
+                {
+                    Dataset = new Dataset()
+                    {
+                        Name = DualLoadConfig.DATASET_SQLDUMMY,
+                        Properties = new DatasetProperties()
+                        {
+                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
+                            TypeProperties = new AzureSqlTableDataset
+                            {
+                                TableName = "Dummy",
 
 
                             }

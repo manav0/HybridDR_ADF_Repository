@@ -74,7 +74,7 @@ namespace HybridDR_ADF
 
                              Activities = new List<Activity>()
                              {
-                                 dualLoad.create_QuerySQL_ETLControl_Activity()
+                                 dualLoad.create_Activity_Init_1()
                                  //dualLoad.create_Record_SProc_Activity()
                                  //dualLoad.create_MoveFiles_Activity()
         }
@@ -83,7 +83,7 @@ namespace HybridDR_ADF
                  }
                      );
 
-            util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime);
+            util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, "@Todo-OUTPUT DATASET");
         }
 
     }

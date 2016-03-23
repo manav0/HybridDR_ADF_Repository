@@ -75,13 +75,13 @@ namespace HybridDR_ADF
                  }
                      );
 
-            util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime);
+            util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, "@Todo-OUTPUT DATASET");
         }
 
 
         private Activity create_QuerySQL_ETLControl_Activity()
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_QuerySQL_ETLControl);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_1);
 
             Activity activity = new Activity();
 
@@ -104,7 +104,7 @@ namespace HybridDR_ADF
             copyActivity.Source = source;
             copyActivity.Sink = sink;
 
-            activity.Name = DualLoadConfig.ACTIVITY_QuerySQL_ETLControl;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_1;
             activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = copyActivity;
@@ -114,7 +114,7 @@ namespace HybridDR_ADF
 
         private Activity create_Record_SProc_Activity()
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_SP_RECORD);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_3);
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
             sprocParams.Add("@ETLControlID", "1");
             sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
@@ -131,7 +131,7 @@ namespace HybridDR_ADF
             sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_SP_RECORD;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_3;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 
@@ -140,7 +140,7 @@ namespace HybridDR_ADF
 
         private Activity create_MoveFiles_Activity()
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_MOVE_FILES);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_4);
 
             Activity activity = new Activity();
 
@@ -167,7 +167,7 @@ namespace HybridDR_ADF
             //scheduler.Interval = 1;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_MOVE_FILES;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_4;
             activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = copyActivity;

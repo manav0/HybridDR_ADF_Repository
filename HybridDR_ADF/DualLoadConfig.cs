@@ -31,14 +31,20 @@ namespace HybridDR_ADF
         public static string DATASET_ROOT = "Dataset-Root";
         public static string DATASET_ToBeProcessedPath = "Dataset-ToBeProcessedPath";
         public static string DATASET_SQLOUTPUT = "Dataset-SqlOutput";
+        public static string DATASET_SQLDUMMY = "Dataset-SqlDummy";
         public static string DATASET_ETL_Control = "Dataset-ETLControl";
+        public static string DATASET_ETL_ControlDetail = "Dataset-ETLControlDetail";
         public static string DATASET_Destination = "Dataset-BlobDestination";
         //public static string DATASET_PDW = "clouddr-pdw-ds";
 
         public static string ACTIVITY_PDW_QUERY = "Activity-PDWquery";
-        public static string ACTIVITY_SP_RECORD = "Activity-SProc-Record";
-        public static string ACTIVITY_QuerySQL_ETLControl = "Activity-QuerySQL-ETLControl";
-        public static string ACTIVITY_MOVE_FILES = "Activity-MoveFiles";
+
+        public static string ACTIVITY_INIT_1 = "Activity-Init-1";
+        public static string ACTIVITY_INIT_3 = "Activity-Init-3";
+        public static string ACTIVITY_INIT_4 = "Activity-Init-4";
+
+        public static string ACTIVITY_LOADPROCESS_3 = "Activity-LoadProcess-3";
+        public static string ACTIVITY_LOADPROCESS_5 = "Activity-LoadProcess-5";
 
         public static string TABLE_PDW = "PDW";
 
@@ -50,6 +56,16 @@ namespace HybridDR_ADF
         public static string CONNECTION_STRING_ControlDB = "Server=tcp:clouddr-dbserver.database.windows.net,1433;Database=clouddr-control-db;User ID=clouddr-dbserver-admin@clouddr-dbserver;Password=Welcome1;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public static string CONNECTION_STRING_StorageAccount = "DefaultEndpointsProtocol=https;AccountName=clouddrstorage;AccountKey=FxWy5CdDsCv19CQ5mcSE2dYmH8hpX0Q8RjqFSrLtdFSOh1yYSIimW9tDYXN/qlLDf+SrPa+tzdBmT9XbNqaTXw==";
 
+        public static String QUERY_INIT_1 = "select id, LastRunDate, FileNameLike, FilePath, ToBeProcessedPath, ArchivePath from[dbo].[ETLControl]";
+
+        public static String QUERY_LOADPROCESS_1 = "select PDWIPAddress, PrimaryPDW from PDW where ID = ?";
+        public static String QUERY_LOADPROCESS_2 = "if(? = 1) Begin select ECD.ID as ETLControlDetailID, FileName from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID Where ControlProcess = ? and PrimaryAPSStatus = 1 order by ecd.id end Else begin select ECD.ID as ETLControlDetailID, FileName from ETLControl EC join ETLControlDetail ECD on ec.id = ECD.ETLControlID Where ControlProcess = ? and SecondaryAPSStatus = 1 order by ecd.id End";
+        public static String QUERY_LOADPROCESS_3 = "if(? = 1) Begin  Update [dbo].[ETLControlDetail] Set PrimaryAPSStatus = 2 Where ID = ? end Else begin Update [dbo].[ETLControlDetail] Set SecondaryAPSStatus = 2 Where ID = ? End";
+        public static String QUERY_LOADPROCESS_5 = "if(? = 1) Begin  Update [dbo].[ETLControlDetail] Set PrimaryAPSStatus = 3 Where ID = ? end Else begin Update [dbo].[ETLControlDetail] Set SecondaryAPSStatus = 3 Where ID = ? End";
+
+        public static String QUERY_ARCHIVE_1 = "select ECD.ID as ETLControlDetailID, FileName, EC.ArchivePath from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID  Where ControlProcess = ? and PrimaryAPSStatus = 3 and SecondaryAPSStatus = 3 order by ecd.id";
+
+        public static String QUERY_ARCHIVE_3 = "Update [dbo].[ETLControlDetail] Set SecondaryAPSStatus = 4, PrimaryAPSStatus = 4, status = 3, FileName = ? Where ID = ?";
 
         private Activity create_Record_SProc_Activity()
         {
@@ -76,7 +92,7 @@ namespace HybridDR_ADF
             //    }
             //}
             ;
-            record_SProc_Activity.Name = DualLoadConfig.ACTIVITY_SP_RECORD;
+            record_SProc_Activity.Name = DualLoadConfig.ACTIVITY_INIT_3;
             record_SProc_Activity.Outputs = new List<ActivityOutput>()
                                     {
                                         new ActivityOutput() {

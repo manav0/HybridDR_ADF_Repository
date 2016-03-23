@@ -33,7 +33,7 @@ namespace HybridDR_ADF
                 Console.WriteLine("Reusing DataFactoryManagementClient");
                 return (client);
             }
-            Console.WriteLine("Creating new DataFactoryManagementClient");
+            Console.WriteLine("Creating DataFactoryManagementClient");
             TokenCloudCredentials aadTokenCredentials = new TokenCloudCredentials(DualLoadConfig.SUBSCRIPTION_ID, GetAuthorizationHeader(DualLoadConfig.AD_TENANT_ID));
 
             Uri resourceManagerUri = new Uri(ConfigurationManager.AppSettings["ResourceManagerEndpoint"]);
@@ -46,11 +46,15 @@ namespace HybridDR_ADF
         {
             Console.WriteLine("Tearing down " + pipelineName);
             //client.DataFactories.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name);
-            client.Pipelines.BeginDelete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, pipelineName);
+            client.Pipelines.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, pipelineName);
+            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_ETL_ControlDetail);
+            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_SQLOUTPUT);
+            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_SQLDUMMY);
+
         }
 
 
-        public void showInteractiveOutput(DateTime PipelineActivePeriodStartTime, DateTime PipelineActivePeriodEndTime)
+        public void showInteractiveOutput(DateTime PipelineActivePeriodStartTime, DateTime PipelineActivePeriodEndTime, String outputDataSetName)
         {
             // Pulling status within a timeout threshold
             DateTime start = DateTime.Now;
@@ -62,7 +66,7 @@ namespace HybridDR_ADF
                 // wait before the next status check
                 Thread.Sleep(1000 * 12);
 
-                var datalistResponse = client.DataSlices.List(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_ToBeProcessedPath,
+                var datalistResponse = client.DataSlices.List(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, outputDataSetName,
                     new DataSliceListParameters()
                     {
                         DataSliceRangeStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString(),
@@ -92,7 +96,7 @@ namespace HybridDR_ADF
             var datasliceRunListResponse = client.DataSliceRuns.List(
                     DualLoadConfig.RESOURCEGROUP_Name,
                     DualLoadConfig.DATAFACTORY_Name,
-                    DualLoadConfig.DATASET_ToBeProcessedPath,
+                    outputDataSetName,
                     new DataSliceRunListParameters()
                     {
                         DataSliceStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString()
