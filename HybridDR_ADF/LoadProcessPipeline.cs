@@ -18,6 +18,9 @@ namespace HybridDR_ADF
 {
     class LoadProcessPipeline
     {
+        private static char PdwId = '1';
+        private static String ControlProcess = "DimEmployee";
+
         static void Main(string[] args)
         {
             LoadProcessPipeline loadProcessPipeline = new LoadProcessPipeline();
@@ -51,30 +54,57 @@ namespace HybridDR_ADF
             DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
             DualLoadActivities dLActivities = new DualLoadActivities();
 
+            DBQuery dbQuery = new DBQuery();
+            //List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_1.Replace('?', PdwId));
 
-            util.getClient().Pipelines.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
-                 new PipelineCreateOrUpdateParameters()
-                 {
-                     Pipeline = new Pipeline()
-                     {
-                         Name = pipelineName,
-                         Properties = new PipelineProperties()
+            List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_2.Replace("$PdwId", "1").Replace("$ControlProcess", "'DimEmployee'"));
+
+            List<Object> controlIdList = new List<Object>();
+
+            foreach (Dictionary<string, object> result in resultList)
+            {
+                foreach (KeyValuePair<string, object> kvp in result)
+                {
+                    string key = kvp.Key;
+                    object value = kvp.Value;
+                    Console.WriteLine("Key: " + key + ", value: " + value);
+                    if ("ETLControlDetailID".Equals(key))
+                    {
+                        controlIdList.Add(value);
+                    }
+                }
+            }
+
+            for (int i = 0; i < controlIdList.Count; i++)
+            {
+                string controlId = controlIdList.ElementAt(i).ToString();
+                Console.WriteLine("controlId " + controlId);
+
+                util.getClient().Pipelines.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                         new PipelineCreateOrUpdateParameters()
                          {
-                             Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
-
-                             // Initial value for pipeline's active period. With this, you won't need to set slice status
-                             Start = PipelineActivePeriodStartTime,
-                             End = PipelineActivePeriodEndTime,
-
-                             Activities = new List<Activity>()
+                             Pipeline = new Pipeline()
                              {
-                                dLActivities.create_Activity_LoadProcess_3(),
-                                //dLActivities.create_Activity_LoadProcess_5()
-        }
+                                 Name = pipelineName,
+                                 Properties = new PipelineProperties()
+                                 {
+                                     Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
+
+                                     // Initial value for pipeline's active period. With this, you won't need to set slice status
+                                     Start = PipelineActivePeriodStartTime,
+                                     End = PipelineActivePeriodEndTime,
+
+                                     Activities = new List<Activity>()
+                                     {
+                                dLActivities.create_Activity_LoadProcess_3(controlId),
+                                dLActivities.create_Activity_LoadProcess_5(controlId)
+                }
+                                 }
+                             }
                          }
-                     }
-                 }
-                     );
+                             );
+            }
+
 
             util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_SQLOUTPUT);
         }

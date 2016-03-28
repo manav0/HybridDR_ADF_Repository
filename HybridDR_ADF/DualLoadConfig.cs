@@ -59,9 +59,9 @@ namespace HybridDR_ADF
         public static String QUERY_INIT_1 = "select id, LastRunDate, FileNameLike, FilePath, ToBeProcessedPath, ArchivePath from[dbo].[ETLControl]";
 
         public static String QUERY_LOADPROCESS_1 = "select PDWIPAddress, PrimaryPDW from PDW where ID = ?";
-        public static String QUERY_LOADPROCESS_2 = "if(? = 1) Begin select ECD.ID as ETLControlDetailID, FileName from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID Where ControlProcess = ? and PrimaryAPSStatus = 1 order by ecd.id end Else begin select ECD.ID as ETLControlDetailID, FileName from ETLControl EC join ETLControlDetail ECD on ec.id = ECD.ETLControlID Where ControlProcess = ? and SecondaryAPSStatus = 1 order by ecd.id End";
-        public static String QUERY_LOADPROCESS_3 = "if(? = 1) Begin  Update [dbo].[ETLControlDetail] Set PrimaryAPSStatus = 2 Where ID = ? end Else begin Update [dbo].[ETLControlDetail] Set SecondaryAPSStatus = 2 Where ID = ? End";
-        public static String QUERY_LOADPROCESS_5 = "if(? = 1) Begin  Update [dbo].[ETLControlDetail] Set PrimaryAPSStatus = 3 Where ID = ? end Else begin Update [dbo].[ETLControlDetail] Set SecondaryAPSStatus = 3 Where ID = ? End";
+        public static String QUERY_LOADPROCESS_2 = "if($PdwId = 1) Begin select ECD.ID as ETLControlDetailID, FileName from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID Where ControlProcess = $ControlProcess and PrimaryAPSStatus = 1 order by ecd.id end Else begin select ECD.ID as ETLControlDetailID, FileName from ETLControl EC join ETLControlDetail ECD on ec.id = ECD.ETLControlID Where ControlProcess = $ControlProcess and SecondaryAPSStatus = 1 order by ecd.id End";
+        //public static string query_loadprocess_3 = "if(? = 1) begin  update [dbo].[etlcontroldetail] set primaryapsstatus = 2 where id = ? end else begin update [dbo].[etlcontroldetail] set secondaryapsstatus = 2 where id = ? end";
+        //public static string query_loadprocess_5 = "if(? = 1) begin  update [dbo].[etlcontroldetail] set primaryapsstatus = 3 where id = ? end else begin update [dbo].[etlcontroldetail] set secondaryapsstatus = 3 where id = ? end";
 
         public static String QUERY_ARCHIVE_1 = "select ECD.ID as ETLControlDetailID, FileName, EC.ArchivePath from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID  Where ControlProcess = ? and PrimaryAPSStatus = 3 and SecondaryAPSStatus = 3 order by ecd.id";
 

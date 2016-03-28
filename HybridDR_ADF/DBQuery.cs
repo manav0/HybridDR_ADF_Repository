@@ -11,10 +11,36 @@ namespace HybridDR_ADF
         static void Main(string[] args)
         {
             DBQuery dbQuery = new DBQuery();
-            dbQuery.getResults(DualLoadConfig.QUERY_INIT_1);
+
+
+            List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_2.Replace("$PdwId", "1").Replace("$ControlProcess", "'DimEmployee'"));
+
+            foreach (Dictionary<string, object> result in resultList)
+            {
+                foreach (KeyValuePair<string, object> kvp in result)
+                {
+                    string key = kvp.Key;
+                    object value = kvp.Value;
+                    Console.WriteLine("Key: " + key + ", value: " + value);
+                }
+            }
+
+            //List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_1.Replace('?', '2'));
+            //Console.WriteLine("resultList: " + resultList);
+
+            //foreach (Dictionary<string, object> result in resultList)
+            //{
+            //    foreach (KeyValuePair<string, object> kvp in result)
+            //    {
+            //        string key = kvp.Key;
+            //        object value = kvp.Value;
+            //        Console.WriteLine("Key: " + key + ", Value: " + value);
+            //    }
+            //}
+            Console.ReadKey();
         }
 
-        public void getResults(String queryString)
+        public List<Dictionary<String, object>> getResultList(String queryString)
         {
             Console.WriteLine("Processing Query: " + queryString);
             SqlConnection connection = new SqlConnection(DualLoadConfig.CONNECTION_STRING_ControlDB);
@@ -28,24 +54,30 @@ namespace HybridDR_ADF
 
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
+            List<Dictionary<string, object>> resultList = new List<Dictionary<string, object>>();
 
+            int rowsReturned = 0;
             while (reader.Read())
             {
+                rowsReturned++;
                 Dictionary<string, object> dict = new Dictionary<string, object>();
-                int rowsReturned = reader.FieldCount;
-                Console.WriteLine("rowsReturned: " + rowsReturned);
-                for (int lp = 0; lp < rowsReturned; lp++)
+                int fieldCount = reader.FieldCount;
+                Console.WriteLine("fieldCount= " + fieldCount);
+                for (int lp = 0; lp < fieldCount; lp++)
                 {
                     String name = reader.GetName(lp);
                     Object value = reader.GetValue(lp);
                     dict.Add(name, value);
-                    Console.WriteLine(name + ": " + value);
+                    Console.WriteLine("name: " + name + ", value: " + value);
                 }
+                resultList.Add(dict);
             }
+
+            Console.WriteLine("rowsReturned: " + rowsReturned);
 
             reader.Close();
             connection.Close();
-            Console.ReadKey();
+            return (resultList);
         }
 
         private void init1(String queryString)

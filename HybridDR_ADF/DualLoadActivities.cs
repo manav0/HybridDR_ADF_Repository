@@ -118,71 +118,94 @@ namespace HybridDR_ADF
         }
 
         //LOAD PROCESS ACTIVITIES
-        public Activity create_Activity_LoadProcess_3()
+        public Activity create_Activity_LoadProcess_3(string ETlControlID)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_3);
 
+            IDictionary<string, string> sprocParams = new Dictionary<string, string>();
+
+            sprocParams.Add("@ControlProcess", "1");
+            sprocParams.Add("@Id", ETlControlID);
+            sprocParams.Add("@Status", "2");
+
             Activity activity = new Activity();
-
-            List<ActivityInput> activityInputs = new List<ActivityInput>();
-            ActivityInput activityInput = new ActivityInput();
-            activityInput.Name = DualLoadConfig.DATASET_ETL_ControlDetail;
-            activityInputs.Add(activityInput);
-            SqlSource source = new SqlSource();
-            source.SqlReaderQuery = (DualLoadConfig.QUERY_LOADPROCESS_3).Replace('?', '3');
-
-            // source.SqlReaderQuery = "Update [dbo].[ETLControlDetail] Set PrimaryAPSStatus = 2 Where Id = 3";
-            Console.WriteLine(" source.SqlReaderQuery= " + source.SqlReaderQuery);
-
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
             activityOutput.Name = DualLoadConfig.DATASET_SQLOUTPUT;
             activityOutputs.Add(activityOutput);
-            SqlSink sink = new SqlSink();
 
-            CopyActivity copyActivity = new CopyActivity();
-            copyActivity.Source = source;
-            copyActivity.Sink = sink;
+            SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
+            sqlserverStoredProcActivity.StoredProcedureName = "usp_UpdateControlDetailStatus";
+            sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
+
 
             activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_3;
-            activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
-            activity.TypeProperties = copyActivity;
+            activity.TypeProperties = sqlserverStoredProcActivity;
 
             return (activity);
         }
 
-        public Activity create_Activity_LoadProcess_5()
+        public Activity create_Activity_LoadProcess_5(string ETlControlID)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_5);
 
-            Activity activity = new Activity();
+            IDictionary<string, string> sprocParams = new Dictionary<string, string>();
 
-            List<ActivityInput> activityInputs = new List<ActivityInput>();
-            ActivityInput activityInput = new ActivityInput();
-            activityInput.Name = DualLoadConfig.DATASET_ETL_Control;
-            activityInputs.Add(activityInput);
-            SqlSource source = new SqlSource();
-            source.SqlReaderQuery = DualLoadConfig.QUERY_LOADPROCESS_5.Replace('?', '3');
+            sprocParams.Add("@ControlProcess", "1");
+            sprocParams.Add("@Id", ETlControlID);
+            sprocParams.Add("@Status", "3");
+
+            Activity activity = new Activity();
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
             activityOutput.Name = DualLoadConfig.DATASET_SQLDUMMY;
             activityOutputs.Add(activityOutput);
-            SqlSink sink = new SqlSink();
 
-            CopyActivity copyActivity = new CopyActivity();
-            copyActivity.Source = source;
-            copyActivity.Sink = sink;
+            SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
+            sqlserverStoredProcActivity.StoredProcedureName = "usp_UpdateControlDetailStatus";
+            sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
+
 
             activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_5;
-            activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
-            activity.TypeProperties = copyActivity;
+            activity.TypeProperties = sqlserverStoredProcActivity;
 
             return (activity);
         }
+
+        //public activity create_activity_loadprocess_5()
+        //{
+        //    console.writeline("creating " + dualloadconfig.activity_loadprocess_5);
+
+        //    activity activity = new activity();
+
+        //    list<activityinput> activityinputs = new list<activityinput>();
+        //    activityinput activityinput = new activityinput();
+        //    activityinput.name = dualloadconfig.dataset_etl_control;
+        //    activityinputs.add(activityinput);
+        //    sqlsource source = new sqlsource();
+        //    source.sqlreaderquery = dualloadconfig.query_loadprocess_5.replace('?', '3');
+
+        //    list<activityoutput> activityoutputs = new list<activityoutput>();
+        //    activityoutput activityoutput = new activityoutput();
+        //    activityoutput.name = dualloadconfig.dataset_sqldummy;
+        //    activityoutputs.add(activityoutput);
+        //    sqlsink sink = new sqlsink();
+
+        //    copyactivity copyactivity = new copyactivity();
+        //    copyactivity.source = source;
+        //    copyactivity.sink = sink;
+
+        //    activity.name = dualloadconfig.activity_loadprocess_5;
+        //    activity.inputs = activityinputs;
+        //    activity.outputs = activityoutputs;
+        //    activity.typeproperties = copyactivity;
+
+        //    return (activity);
+        //}
 
     }
 }
