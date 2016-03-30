@@ -28,8 +28,8 @@ namespace HybridDR_ADF
         public static string LINKEDSERVICE_BlobStore_Name = "Linked-Service-BlobStore";
 
         public static string DATASET_Source = "Dataset-BlobSource";
-        public static string DATASET_ROOT = "Dataset-Root";
-        public static string DATASET_ToBeProcessedPath = "Dataset-ToBeProcessedPath";
+        public static string DATASET_SOURCEFOLDER = "Dataset-SourceFolder";
+        public static string DATASET_ToBeProcessedFolder = "Dataset-ToBeProcessedFolder";
         public static string DATASET_SQLOUTPUT = "Dataset-SqlOutput";
         public static string DATASET_SQLDUMMY = "Dataset-SqlDummy";
         public static string DATASET_ETL_Control = "Dataset-ETLControl";
@@ -54,9 +54,11 @@ namespace HybridDR_ADF
 
 
         public static string CONNECTION_STRING_ControlDB = "Server=tcp:clouddr-dbserver.database.windows.net,1433;Database=clouddr-control-db;User ID=clouddr-dbserver-admin@clouddr-dbserver;Password=Welcome1;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        //public static string CONNECTION_STRING_StorageAccount = "DefaultEndpointsProtocol=https;AccountName=clouddrstorage;AccountKey=FxWy5CdDsCv19CQ5mcSE2dYmH8hpX0Q8RjqFSrLtdFSOh1yYSIimW9tDYXN/qlLDf+SrPa+tzdBmT9XbNqaTXw==";
+
         public static string CONNECTION_STRING_StorageAccount = "DefaultEndpointsProtocol=https;AccountName=clouddrstorage;AccountKey=FxWy5CdDsCv19CQ5mcSE2dYmH8hpX0Q8RjqFSrLtdFSOh1yYSIimW9tDYXN/qlLDf+SrPa+tzdBmT9XbNqaTXw==";
 
-        public static String QUERY_INIT_1 = "select id, LastRunDate, FileNameLike, FilePath, ToBeProcessedPath, ArchivePath from[dbo].[ETLControl]";
+        public static String QUERY_INIT_1 = "select id, ControlProcess, LastRunDate, FileNameLike, FilePath, ToBeProcessedPath, ArchivePath from[dbo].[ETLControl]";
 
         public static String QUERY_LOADPROCESS_1 = "select PDWIPAddress, PrimaryPDW from PDW where ID = ?";
         public static String QUERY_LOADPROCESS_2 = "if($PdwId = 1) Begin select ECD.ID as ETLControlDetailID, FileName from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID Where ControlProcess = $ControlProcess and PrimaryAPSStatus = 1 order by ecd.id end Else begin select ECD.ID as ETLControlDetailID, FileName from ETLControl EC join ETLControlDetail ECD on ec.id = ECD.ETLControlID Where ControlProcess = $ControlProcess and SecondaryAPSStatus = 1 order by ecd.id End";

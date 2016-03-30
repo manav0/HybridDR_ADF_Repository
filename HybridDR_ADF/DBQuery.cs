@@ -8,35 +8,11 @@ namespace HybridDR_ADF
 {
     class DBQuery
     {
+
         static void Main(string[] args)
         {
             DBQuery dbQuery = new DBQuery();
 
-
-            List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_2.Replace("$PdwId", "1").Replace("$ControlProcess", "'DimEmployee'"));
-
-            foreach (Dictionary<string, object> result in resultList)
-            {
-                foreach (KeyValuePair<string, object> kvp in result)
-                {
-                    string key = kvp.Key;
-                    object value = kvp.Value;
-                    Console.WriteLine("Key: " + key + ", value: " + value);
-                }
-            }
-
-            //List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_1.Replace('?', '2'));
-            //Console.WriteLine("resultList: " + resultList);
-
-            //foreach (Dictionary<string, object> result in resultList)
-            //{
-            //    foreach (KeyValuePair<string, object> kvp in result)
-            //    {
-            //        string key = kvp.Key;
-            //        object value = kvp.Value;
-            //        Console.WriteLine("Key: " + key + ", Value: " + value);
-            //    }
-            //}
             Console.ReadKey();
         }
 

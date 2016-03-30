@@ -99,23 +99,23 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_root()
+        public void createDataSet_SourceFolder(String container, String folderPath, String file)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ROOT);
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_SOURCEFOLDER);
+
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
                     Dataset = new Dataset()
                     {
-                        Name = DualLoadConfig.DATASET_ROOT,
+                        Name = DualLoadConfig.DATASET_SOURCEFOLDER,
                         Properties = new DatasetProperties()
                         {
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
                             TypeProperties = new AzureBlobDataset
                             {
-                                FolderPath = "root/",
-                                FileName = "test.csv"
-
+                                FolderPath = container + folderPath,//"root/",
+                                FileName = file//"test.csv"
                             },
                             External = true,
                             Availability = new Availability()
@@ -128,21 +128,21 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_ToBeProcessedPath()
+        public void createDataSet_ToBeProcessedPath(String container, String toBeProcessedFolderPath)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ToBeProcessedPath);
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ToBeProcessedFolder);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
                     Dataset = new Dataset()
                     {
-                        Name = DualLoadConfig.DATASET_ToBeProcessedPath,
+                        Name = DualLoadConfig.DATASET_ToBeProcessedFolder,
                         Properties = new DatasetProperties()
                         {
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
                             TypeProperties = new AzureBlobDataset
                             {
-                                FolderPath = "root/ToBeProcessedPath/"
+                                FolderPath = container + "/" + toBeProcessedFolderPath //"root/ToBeProcessedPath/"
                             },
                             Availability = new Availability()
                             {

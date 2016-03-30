@@ -21,6 +21,10 @@ namespace HybridDR_ADF
     {
 
         //INIT ACTIVITIES
+
+        /**
+        * not used currently
+        */
         public Activity create_Activity_Init_1()
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_1);
@@ -52,12 +56,18 @@ namespace HybridDR_ADF
             return (activity);
         }
 
-        public Activity create_Activity_Init_3()
+        /**
+        * Stored Proc Activity - usp_RecordFilesToBeProcessed
+        */
+        public Activity create_Activity_Init_3(String controlID, String filePath)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_3);
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
-            sprocParams.Add("@ETLControlID", "1");
-            sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
+            //sprocParams.Add("@ETLControlID", "1");
+            //sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
+
+            sprocParams.Add("@ETLControlID", controlID);
+            sprocParams.Add("@FileName", filePath);
 
             Activity activity = new Activity();
 
@@ -78,8 +88,10 @@ namespace HybridDR_ADF
             return (activity);
         }
 
-
-        public Activity create_Activity_Init_4()
+        /**
+        * CopyActivity from source to destination dataset
+        */
+        public Activity create_Activity_Init_4(String sourceDataset, String destinationDataset)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_4);
 
@@ -87,12 +99,12 @@ namespace HybridDR_ADF
 
             List<ActivityInput> activityInputs = new List<ActivityInput>();
             ActivityInput activityInput = new ActivityInput();
-            activityInput.Name = DualLoadConfig.DATASET_ROOT;
+            activityInput.Name = sourceDataset;
             activityInputs.Add(activityInput);
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_ToBeProcessedPath;
+            activityOutput.Name = destinationDataset;
             activityOutputs.Add(activityOutput);
 
             CopyActivity copyActivity = new CopyActivity();

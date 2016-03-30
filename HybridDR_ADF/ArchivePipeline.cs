@@ -39,8 +39,8 @@ namespace HybridDR_ADF
 
             datasets.createDataSet_ETLControl();
             datasets.createDataSet_SqlOutput();
-            datasets.createDataSet_root();
-            datasets.createDataSet_ToBeProcessedPath();
+            //datasets.createDataSet_root();
+            //datasets.createDataSet_ToBeProcessedPath(tob);
         }
 
         private void createPipeline(DualLoadUtil util, String pipelineName)
@@ -146,12 +146,12 @@ namespace HybridDR_ADF
 
             List<ActivityInput> activityInputs = new List<ActivityInput>();
             ActivityInput activityInput = new ActivityInput();
-            activityInput.Name = DualLoadConfig.DATASET_ROOT;
+            activityInput.Name = DualLoadConfig.DATASET_SOURCEFOLDER;
             activityInputs.Add(activityInput);
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_ToBeProcessedPath;
+            activityOutput.Name = DualLoadConfig.DATASET_ToBeProcessedFolder;
             activityOutputs.Add(activityOutput);
 
             CopyActivity copyActivity = new CopyActivity();

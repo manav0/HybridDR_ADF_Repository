@@ -9,7 +9,7 @@ namespace HybridDR_ADF
         {
             DualLoadMain main = new DualLoadMain();
             DualLoadUtil util = new DualLoadUtil();
-            main.tearDown(util);
+            //main.tearDown(util);
             main.initialize(util);
         }
 

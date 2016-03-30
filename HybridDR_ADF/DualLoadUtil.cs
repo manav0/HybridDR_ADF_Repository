@@ -20,11 +20,23 @@ namespace HybridDR_ADF
     class DualLoadUtil
     {
         private static DataFactoryManagementClient client;
+        private DualLoadDatasets datasets;
 
         public DataFactoryManagementClient getClient()
         {
             return (client);
         }
+
+        public DualLoadDatasets getDatasets()
+        {
+            return (datasets);
+        }
+
+        public void setDatasets(DualLoadDatasets datasets)
+        {
+            this.datasets = datasets;
+        }
+
 
         public static DataFactoryManagementClient createDataFactoryManagementClient()
         {
@@ -118,6 +130,7 @@ namespace HybridDR_ADF
         {
             // create a data factory
             Console.WriteLine("Creating a new data factory: " + DualLoadConfig.DATAFACTORY_Name);
+            client = createDataFactoryManagementClient();
             client.DataFactories.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name,
                 new DataFactoryCreateOrUpdateParameters()
                 {
