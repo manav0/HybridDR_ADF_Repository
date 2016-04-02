@@ -13,7 +13,7 @@ using System.Text;
 //Nuget WindowsAzure.Storage
 namespace HybridDR_ADF
 {
-    class StorageQuery
+    class AzureStorageController
     {
 
         private static CloudStorageAccount storageAccount = CloudStorageAccount.Parse(DualLoadConfig.CONNECTION_STRING_StorageAccount);
@@ -21,9 +21,10 @@ namespace HybridDR_ADF
 
         static void Main(string[] args)
         {
-            StorageQuery storageQuery = new StorageQuery();
+            AzureStorageController storageController = new AzureStorageController();
             //getFilePathList("/");
-            storageQuery.getFilePathList("dimemployee", "TOBEPROCESSEDPATH/");
+            //storageController.getFilePathList("dimemployee", "TOBEPROCESSEDPATH/");
+            storageController.deleteBlob("dimemployee", "/", "test.csv");
 
 
             //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(DualLoadConfig.CONNECTION_STRING_StorageAccount);
@@ -73,54 +74,7 @@ namespace HybridDR_ADF
         //    return cloudTimeStampUTC;
         //}
 
-        //public void getFilePathList()
-        //{
-        //    // Retrieve storage account from connection string.
-        //    //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-        //    //    CloudConfigurationManager.GetSetting("https://clouddrstorage.blob.core.windows.net/"));
-        //    CloudStorageAccount storageAccount = CloudStorageAccount.Parse(DualLoadConfig.CONNECTION_STRING_StorageAccount);
 
-        //    // Create the blob client.
-        //    CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
-        //    // Retrieve reference to a previously created container.
-        //    CloudBlobContainer container = blobClient.GetContainerReference("root");
-
-
-        //    // Loop over items within the container and output the length and URI.
-        //    foreach (IListBlobItem item in container.ListBlobs(null, false))
-        //    {
-        //        if (item.GetType() == typeof(CloudBlockBlob))
-        //        {
-        //            CloudBlockBlob blob = (CloudBlockBlob)item;
-
-        //            Console.WriteLine("Block blob of length {0}: {1}", blob.Properties.Length, blob.Uri);
-        //            DateTimeOffset? lastModifiedTime = blob.Properties.LastModified;
-        //            Console.WriteLine("LastModified: " + lastModifiedTime);
-
-        //        }
-        //        else if (item.GetType() == typeof(CloudPageBlob))
-        //        {
-        //            CloudPageBlob pageBlob = (CloudPageBlob)item;
-
-        //            Console.WriteLine("Page blob of length {0}: {1}", pageBlob.Properties.Length, pageBlob.Uri);
-
-        //        }
-        //        else if (item.GetType() == typeof(CloudBlobDirectory))
-        //        {
-        //            CloudBlobDirectory directory = (CloudBlobDirectory)item;
-
-        //            Console.WriteLine("Directory: {0}", directory.Uri);
-        //            IEnumerable<IListBlobItem> blobList = directory.ListBlobs();
-
-        //            Console.WriteLine(blobList);
-
-        //            Console.ReadLine();
-        //        }
-        //    }
-
-
-        //}
 
         static void writeAzureDirectoriesToConsole(IEnumerable<CloudBlobContainer> containers)
         {
@@ -139,22 +93,13 @@ namespace HybridDR_ADF
             }
         }
 
-        public List<String> getFilePathList(String container, String directoryPath)
+        public void deleteBlob(String container, String directoryPath, String file)
         {
-
             IEnumerable<CloudBlobContainer> containers = blobClient.ListContainers();
             IEnumerable<IListBlobItem> blobList = null;
             foreach (var containerItem in containers)
             {
-                //string indent = "";
                 Console.WriteLine("Container: " + containerItem.Name);
-                // Pass Ienumerable to recursive function to get "subdirectories":
-                //Console.WriteLine(getContainerDirectories(container.ListBlobs(), indent));
-                //List<String> filePathList = getFilePathList(container.ListBlobs(), "ToBeProcessedPath/");
-                //List<String> filePathList = getFilePathList(container.ListBlobs(), "/");
-                //foreach (String filePath in filePathList)
-                //{
-                //Console.WriteLine("filePath= " + filePath);
                 if (containerItem.Name.Equals(container))
                 {
                     blobList = containerItem.ListBlobs();
@@ -162,6 +107,61 @@ namespace HybridDR_ADF
 
             }
 
+            Console.WriteLine("directory param: " + directoryPath.ToUpper());
+            //List<String> filePathList = new List<string>();
+            if ("/".Equals(directoryPath.ToUpper()))
+            {
+                Console.WriteLine("retrieving blobs from container root");
+                foreach (var item in
+                    blobList.Where((blobItem, type) => blobItem is CloudBlockBlob))
+                {
+                    var blobFile = item as CloudBlockBlob;
+                    if (file.Equals(blobFile.Name))
+                    {
+                        Console.WriteLine("deleting blobFile.Name= " + blobFile.Name);
+                        blobFile.Delete();
+                    }
+
+                }
+                return;
+            }
+
+            foreach (var item in blobList.Where((blobItem, type) => blobItem is CloudBlobDirectory))
+            {
+                var directory = item as CloudBlobDirectory;
+                String directoryString = directory.Prefix.ToUpper();
+                Console.WriteLine("Found directory: " + directoryString);
+
+                if (directoryString.Equals(directoryPath.ToUpper()))
+                {
+                    Console.WriteLine("retrieving blobs from container directory: " + directoryString);
+                    foreach (var subitem in directory.ListBlobs().Where((blobsubItem, type) => blobsubItem is CloudBlockBlob))
+                    {
+                        var blobFile = subitem as CloudBlockBlob;
+                        if (file.Equals(blobFile.Name))
+                        {
+                            Console.WriteLine("deleting blobFile.Name= " + blobFile.Name);
+                            blobFile.Delete();
+                        }
+                    }
+                }
+            }
+
+        }
+
+        public List<String> getFilePathList(String container, String directoryPath)
+        {
+            IEnumerable<CloudBlobContainer> containers = blobClient.ListContainers();
+            IEnumerable<IListBlobItem> blobList = null;
+            foreach (var containerItem in containers)
+            {
+                Console.WriteLine("Container: " + containerItem.Name);
+                if (containerItem.Name.Equals(container))
+                {
+                    blobList = containerItem.ListBlobs();
+                }
+
+            }
 
             Console.WriteLine("directory param: " + directoryPath.ToUpper());
             List<String> filePathList = new List<string>();
@@ -177,7 +177,7 @@ namespace HybridDR_ADF
                 }
                 return (filePathList);
             }
-            //return (getFilesInPath(blobList, directoryPath));            List<String> filePathList = new List<string>();
+
             foreach (var item in blobList.Where((blobItem, type) => blobItem is CloudBlobDirectory))
             {
                 var directory = item as CloudBlobDirectory;
@@ -201,8 +201,7 @@ namespace HybridDR_ADF
 
         static string getContainerDirectories(IEnumerable<IListBlobItem> blobList, string indent)
         {
-            // Indent each item in the output for the current subdirectory:
-            indent = indent + "  ";
+            indent = indent + "  "; // Indent each item in the output for the current subdirectory:
             StringBuilder sb = new StringBuilder("");
             // First list all the actual FILES within the current blob list. No recursion needed:
             foreach (var item in blobList.Where((blobItem, type) => blobItem is CloudBlockBlob))

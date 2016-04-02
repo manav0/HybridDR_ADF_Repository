@@ -40,7 +40,7 @@ namespace HybridDR_ADF
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_SQLOUTPUT;
+            activityOutput.Name = DualLoadConfig.DATASET_LOAD_1_SQLDUMMY;
             activityOutputs.Add(activityOutput);
             SqlSink sink = new SqlSink();
 
@@ -59,21 +59,21 @@ namespace HybridDR_ADF
         /**
         * Stored Proc Activity - usp_RecordFilesToBeProcessed
         */
-        public Activity create_Activity_Init_3(String controlID, String filePath)
+        public Activity create_Activity_Init_3(int controlID, String filePath, int i)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_3);
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
             //sprocParams.Add("@ETLControlID", "1");
             //sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
 
-            sprocParams.Add("@ETLControlID", controlID);
+            sprocParams.Add("@ETLControlID", controlID.ToString());
             sprocParams.Add("@FileName", filePath);
 
             Activity activity = new Activity();
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_SQLOUTPUT;
+            activityOutput.Name = DualLoadConfig.DATASET_INIT_SQLDUMMY + "_" + i;
             activityOutputs.Add(activityOutput);
 
             SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
@@ -89,9 +89,9 @@ namespace HybridDR_ADF
         }
 
         /**
-        * CopyActivity from source to destination dataset
+        * CopyActivity from Blob source to Blob sink from Source Folder to ToBeProcessed Folder
         */
-        public Activity create_Activity_Init_4(String sourceDataset, String destinationDataset)
+        public Activity create_Activity_Init_4(String sourceFolderDataset, String toBeProcessedFolderDataset)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_4);
 
@@ -99,18 +99,22 @@ namespace HybridDR_ADF
 
             List<ActivityInput> activityInputs = new List<ActivityInput>();
             ActivityInput activityInput = new ActivityInput();
-            activityInput.Name = sourceDataset;
+            activityInput.Name = sourceFolderDataset;
             activityInputs.Add(activityInput);
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = destinationDataset;
+            activityOutput.Name = toBeProcessedFolderDataset;
             activityOutputs.Add(activityOutput);
 
             CopyActivity copyActivity = new CopyActivity();
-            copyActivity.Source = new BlobSource();
+            BlobSource blobSource = new BlobSource();
+            copyActivity.Source = blobSource;
+            //blobSource.Recursive = true;
 
             BlobSink sink = new BlobSink();
+            sink.CopyBehavior = "PreserveHierarchy";
+
             //sink.WriteBatchSize = 10000;
             //sink.WriteBatchTimeout = TimeSpan.FromMinutes(10);
             copyActivity.Sink = sink;
@@ -130,7 +134,7 @@ namespace HybridDR_ADF
         }
 
         //LOAD PROCESS ACTIVITIES
-        public Activity create_Activity_LoadProcess_3(string ETlControlID)
+        public Activity create_Activity_LoadProcess_3(string ETlControlID, int i)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_3);
 
@@ -144,7 +148,7 @@ namespace HybridDR_ADF
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_SQLOUTPUT;
+            activityOutput.Name = DualLoadConfig.DATASET_LOAD_1_SQLDUMMY + "_" + i;
             activityOutputs.Add(activityOutput);
 
             SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
@@ -159,7 +163,7 @@ namespace HybridDR_ADF
             return (activity);
         }
 
-        public Activity create_Activity_LoadProcess_5(string ETlControlID)
+        public Activity create_Activity_LoadProcess_5(string ETlControlID, int i)
         {
             Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_5);
 
@@ -173,7 +177,7 @@ namespace HybridDR_ADF
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_SQLDUMMY;
+            activityOutput.Name = DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i;
             activityOutputs.Add(activityOutput);
 
             SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
@@ -182,6 +186,83 @@ namespace HybridDR_ADF
 
 
             activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_5;
+            activity.Outputs = activityOutputs;
+            activity.TypeProperties = sqlserverStoredProcActivity;
+
+            return (activity);
+        }
+
+
+        //ARCHIVE ACTIVITIES
+        /**
+        * CopyActivity from Blob source to Blob sink from ToBeProcessed Folder to Archived Folder
+        */
+        public Activity create_Activity_Archive_2(String toBeProcessedFolderDataset, String archiveFolderDataset)
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_ARCHIVE_2);
+
+            Activity activity = new Activity();
+
+            List<ActivityInput> activityInputs = new List<ActivityInput>();
+            ActivityInput activityInput = new ActivityInput();
+            activityInput.Name = toBeProcessedFolderDataset;
+            activityInputs.Add(activityInput);
+
+            List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
+            ActivityOutput activityOutput = new ActivityOutput();
+            activityOutput.Name = archiveFolderDataset;
+            activityOutputs.Add(activityOutput);
+
+            CopyActivity copyActivity = new CopyActivity();
+            BlobSource blobSource = new BlobSource();
+            copyActivity.Source = blobSource;
+            //blobSource.Recursive = true;
+
+            BlobSink sink = new BlobSink();
+            sink.CopyBehavior = "PreserveHierarchy";
+
+            //sink.WriteBatchSize = 10000;
+            //sink.WriteBatchTimeout = TimeSpan.FromMinutes(10);
+            copyActivity.Sink = sink;
+
+            //Scheduler scheduler = new Scheduler();
+            //scheduler.Frequency = SchedulePeriod.Hour;
+            //scheduler.Interval = 1;
+
+
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_4;
+            activity.Inputs = activityInputs;
+            activity.Outputs = activityOutputs;
+            activity.TypeProperties = copyActivity;
+            //activity.Scheduler = scheduler;
+
+            return (activity);
+        }
+
+        /**
+        * Stored Proc Activity - usp_RecordFilesToBeProcessed
+        */
+        public Activity create_Activity_Archive_3(int controlDetailID, String fileName)
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_ARCHIVE_3);
+            IDictionary<string, string> sprocParams = new Dictionary<string, string>();
+            sprocParams.Add("@ControlProcess", "1");
+            sprocParams.Add("@Id", controlDetailID.ToString());
+            sprocParams.Add("@Status", "3");
+
+            Activity activity = new Activity();
+
+            List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
+            ActivityOutput activityOutput = new ActivityOutput();
+            activityOutput.Name = DualLoadConfig.DATASET_LOAD_1_SQLDUMMY;
+            activityOutputs.Add(activityOutput);
+
+            SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
+            sqlserverStoredProcActivity.StoredProcedureName = "dbo.usp_UpdateControlDetailStatus";
+            sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
+
+
+            activity.Name = DualLoadConfig.ACTIVITY_ARCHIVE_3;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 

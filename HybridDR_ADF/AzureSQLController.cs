@@ -6,14 +6,42 @@ using System.Linq;
 
 namespace HybridDR_ADF
 {
-    class DBQuery
+    class AzureSQLController
     {
 
         static void Main(string[] args)
         {
-            DBQuery dbQuery = new DBQuery();
-
+            AzureSQLController sqlController = new AzureSQLController();
+            sqlController.executeDBQuery_Step1();
             Console.ReadKey();
+        }
+
+        private void executeDBQuery_Step1()
+        {
+            int CONTROLDETAIL_ID = 0;
+            String FILENAME = "", ARCHIVE_FOLDER_PATH = "";
+
+
+            List<Dictionary<string, object>> resultList = getResultList(DualLoadConfig.QUERY_ARCHIVE_1);
+
+            List<Object> controlIdList = new List<Object>();
+            foreach (Dictionary<string, object> result in resultList)
+            {
+                foreach (KeyValuePair<string, object> kvp in result)
+                {
+                    string key = kvp.Key;
+                    object value = kvp.Value;
+                    //Console.WriteLine("Key: " + key + ", value: " + value);
+                    CONTROLDETAIL_ID = ("ETLControlDetailID".Equals(key)) ? (int)value : CONTROLDETAIL_ID;
+                    FILENAME = ("FileName".Equals(key)) ? value.ToString() : FILENAME;
+                    ARCHIVE_FOLDER_PATH = ("ArchivePath".Equals(key)) ? value.ToString() : ARCHIVE_FOLDER_PATH;
+                    Console.WriteLine("CONTROLDETAIL_ID = " + CONTROLDETAIL_ID);
+                    Console.WriteLine("FILENAME = " + FILENAME);
+                    Console.WriteLine("ARCHIVE_FOLDER_PATH = " + ARCHIVE_FOLDER_PATH);
+                }
+            }
+
+
         }
 
         public List<Dictionary<String, object>> getResultList(String queryString)

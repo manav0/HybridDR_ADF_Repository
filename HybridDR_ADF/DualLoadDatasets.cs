@@ -128,7 +128,7 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_ToBeProcessedPath(String container, String toBeProcessedFolderPath)
+        public void createDataSet_ToBeProcessedPath(String container, String toBeProcessedFolderPath, String file)
         {
             Console.WriteLine("Creating " + DualLoadConfig.DATASET_ToBeProcessedFolder);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
@@ -154,21 +154,51 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_SqlOutput()
+        public void createDataSet_ArchivedFolder(String container, String folderPath, String file)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT);
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ArchivedFolder);
+
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
                     Dataset = new Dataset()
                     {
-                        Name = DualLoadConfig.DATASET_SQLOUTPUT,
+                        Name = DualLoadConfig.DATASET_ArchivedFolder,
+                        Properties = new DatasetProperties()
+                        {
+                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
+                            TypeProperties = new AzureBlobDataset
+                            {
+                                FolderPath = container + folderPath,//"root/",
+                                FileName = file//"test.csv"
+                            },
+                            External = true,
+                            Availability = new Availability()
+                            {
+                                Frequency = SchedulePeriod.Hour,
+                                Interval = 1,
+                            }
+                        }
+                    }
+                });
+        }
+
+
+        public void createDataSet_Init_SqlDummy(int i)
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_INIT_SQLDUMMY + "_" + i);
+            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                new DatasetCreateOrUpdateParameters()
+                {
+                    Dataset = new Dataset()
+                    {
+                        Name = DualLoadConfig.DATASET_INIT_SQLDUMMY + "_" + i,
                         Properties = new DatasetProperties()
                         {
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
                             TypeProperties = new AzureSqlTableDataset
                             {
-                                TableName = "Output",
+                                TableName = "Init_Dummy",
 
 
                             }
@@ -193,23 +223,23 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_SqlDummy()
+
+        public void createDataSet_Load_1_SqlDummy(int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLDUMMY);
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_LOAD_1_SQLDUMMY + "_" + i);
+            //Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT + "_" + i);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
                     Dataset = new Dataset()
                     {
-                        Name = DualLoadConfig.DATASET_SQLDUMMY,
+                        Name = DualLoadConfig.DATASET_LOAD_1_SQLDUMMY + "_" + i,
                         Properties = new DatasetProperties()
                         {
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
                             TypeProperties = new AzureSqlTableDataset
                             {
-                                TableName = "Dummy",
-
-
+                                TableName = "Load_1_Dummy",
                             }
                             ,
                             //External = true,
@@ -231,6 +261,50 @@ namespace HybridDR_ADF
                     }
                 });
         }
+
+
+        public void createDataSet_Load_2_SqlDummy(int i)
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i);
+            //Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT + "_" + i);
+            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                new DatasetCreateOrUpdateParameters()
+                {
+                    Dataset = new Dataset()
+                    {
+                        Name = DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i,
+                        Properties = new DatasetProperties()
+                        {
+                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
+                            TypeProperties = new AzureSqlTableDataset
+                            {
+                                TableName = "Load_2_Dummy",
+                            }
+                            ,
+                            //External = true,
+                            Availability = new Availability()
+                            {
+                                Frequency = SchedulePeriod.Hour,
+                                Interval = 1,
+                            }
+                            //,
+
+                            //Policy = new Policy()
+                            //{
+                            //    Validation = new ValidationPolicy()
+                            //    {
+                            //        MinimumRows = 1
+                            //    }
+                            //}
+                        }
+                    }
+                });
+        }
+
+
+        /**
+        * not used currently
+        */
         public void createOutputDataSet()
         {
             Console.WriteLine("Creating output dataset");

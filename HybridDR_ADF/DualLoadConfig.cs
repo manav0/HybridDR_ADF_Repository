@@ -30,8 +30,12 @@ namespace HybridDR_ADF
         public static string DATASET_Source = "Dataset-BlobSource";
         public static string DATASET_SOURCEFOLDER = "Dataset-SourceFolder";
         public static string DATASET_ToBeProcessedFolder = "Dataset-ToBeProcessedFolder";
-        public static string DATASET_SQLOUTPUT = "Dataset-SqlOutput";
-        public static string DATASET_SQLDUMMY = "Dataset-SqlDummy";
+        public static string DATASET_ArchivedFolder = "Dataset-ArchivedFolder";
+
+        public static string DATASET_INIT_SQLDUMMY = "Dataset-Init-SqlDummy";
+        public static string DATASET_LOAD_1_SQLDUMMY = "Dataset-Load-1-SqlDummy";
+        public static string DATASET_LOAD_2_SQLDUMMY = "Dataset-Load-2-SqlDummy";
+
         public static string DATASET_ETL_Control = "Dataset-ETLControl";
         public static string DATASET_ETL_ControlDetail = "Dataset-ETLControlDetail";
         public static string DATASET_Destination = "Dataset-BlobDestination";
@@ -45,6 +49,9 @@ namespace HybridDR_ADF
 
         public static string ACTIVITY_LOADPROCESS_3 = "Activity-LoadProcess-3";
         public static string ACTIVITY_LOADPROCESS_5 = "Activity-LoadProcess-5";
+
+        public static string ACTIVITY_ARCHIVE_2 = "Activity-Archive-2";
+        public static string ACTIVITY_ARCHIVE_3 = "Activity-Archive-3";
 
         public static string TABLE_PDW = "PDW";
 
@@ -99,7 +106,7 @@ namespace HybridDR_ADF
                                     {
                                         new ActivityOutput() {
                                         //Name = DualLoadConfig.DATASET_BLOBSTORE
-                                        Name = DualLoadConfig.DATASET_SQLOUTPUT
+                                        Name = DualLoadConfig.DATASET_LOAD_1_SQLDUMMY
                                         }
                                     };
             record_SProc_Activity.TypeProperties = new SqlServerStoredProcedureActivity

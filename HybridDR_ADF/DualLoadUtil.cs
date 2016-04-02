@@ -60,8 +60,8 @@ namespace HybridDR_ADF
             //client.DataFactories.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name);
             client.Pipelines.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, pipelineName);
             client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_ETL_ControlDetail);
-            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_SQLOUTPUT);
-            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_SQLDUMMY);
+            //client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_INIT_SQLDUMMY);
+            //client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_SQLDUMMY2);
 
         }
 
@@ -79,11 +79,11 @@ namespace HybridDR_ADF
                 Thread.Sleep(1000 * 12);
 
                 var datalistResponse = client.DataSlices.List(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, outputDataSetName,
-                    new DataSliceListParameters()
-                    {
-                        DataSliceRangeStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString(),
-                        DataSliceRangeEndTime = PipelineActivePeriodEndTime.ConvertToISO8601DateTimeString()
-                    });
+                new DataSliceListParameters()
+                {
+                    DataSliceRangeStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString(),
+                    DataSliceRangeEndTime = PipelineActivePeriodEndTime.ConvertToISO8601DateTimeString()
+                });
 
                 foreach (DataSlice slice in datalistResponse.DataSlices)
                 {

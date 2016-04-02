@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>HybridDR_ADF.InitPipeline</StartupObject>
+    <StartupObject>HybridDR_ADF.LoadProcessPipeline</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hyak.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -121,11 +121,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StorageQuery.cs" />
+    <Compile Include="AzureStorageController.cs" />
     <Compile Include="DualLoadConfig.cs" />
     <Compile Include="DualLoadDatasets.cs" />
     <Compile Include="ArchivePipeline.cs" />
-    <Compile Include="DBQuery.cs" />
+    <Compile Include="AzureSQLController.cs" />
     <Compile Include="DualLoadMain.cs" />
     <Compile Include="DualLoadActivities.cs" />
     <Compile Include="LoadProcessPipeline.cs" />

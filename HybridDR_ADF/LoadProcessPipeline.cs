@@ -28,36 +28,37 @@ namespace HybridDR_ADF
 
             DataFactoryManagementClient client = DualLoadUtil.createDataFactoryManagementClient();
             util.tearDown(client, DualLoadConfig.PIPELINE_LOADPROCESS);
-            loadProcessPipeline.createDatasets(client);
-            loadProcessPipeline.createPipeline(util, DualLoadConfig.PIPELINE_LOADPROCESS);
+            DualLoadDatasets datasets = loadProcessPipeline.createDatasets(client);
+            util.setDatasets(datasets);
+            loadProcessPipeline.createPipelines(util, DualLoadConfig.PIPELINE_LOADPROCESS);
 
             Console.WriteLine("\nPress any key to exit.");
             Console.ReadKey();
         }
 
 
-        private void createDatasets(DataFactoryManagementClient client)
+        private DualLoadDatasets createDatasets(DataFactoryManagementClient client)
         {
             DualLoadDatasets datasets = new DualLoadDatasets(client);
             //datasets.createDataSet_ETLControl();
             datasets.createDataSet_ETLControlDetail();
-            datasets.createDataSet_SqlOutput();
-            datasets.createDataSet_SqlDummy();
+            //datasets.createDataSet_SqlDummy();
             //datasets.createDataSet_root();
             //datasets.createDataSet_ToBeProcessedPath();
+            return (datasets);
         }
 
-        private void createPipeline(DualLoadUtil util, String pipelineName)
+        private void createPipelines(DualLoadUtil util, String basePipelineName)
         {
-            Console.WriteLine("Creating " + pipelineName);
-            DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
-            DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
+            //DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
+            //DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
             DualLoadActivities dLActivities = new DualLoadActivities();
 
-            DBQuery dbQuery = new DBQuery();
+
+            AzureSQLController sqlController = new AzureSQLController();
             //List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_1.Replace('?', PdwId));
 
-            List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_2.Replace("$PdwId", "1").Replace("$ControlProcess", "'DimEmployee'"));
+            List<Dictionary<string, object>> resultList = sqlController.getResultList(DualLoadConfig.QUERY_LOADPROCESS_2.Replace("$PdwId", "1").Replace("$ControlProcess", "'DimEmployee'"));
 
             List<Object> controlIdList = new List<Object>();
 
@@ -77,15 +78,20 @@ namespace HybridDR_ADF
 
             for (int i = 0; i < controlIdList.Count; i++)
             {
+                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 10, i, 0, 0, 0, DateTimeKind.Local);
+                DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
                 string controlId = controlIdList.ElementAt(i).ToString();
                 Console.WriteLine("controlId " + controlId);
+                Console.WriteLine("Creating Pipeline: " + basePipelineName + "_" + i);
+                util.getDatasets().createDataSet_Load_1_SqlDummy(i);
+                util.getDatasets().createDataSet_Load_2_SqlDummy(i);
 
                 util.getClient().Pipelines.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                          new PipelineCreateOrUpdateParameters()
                          {
                              Pipeline = new Pipeline()
                              {
-                                 Name = pipelineName,
+                                 Name = basePipelineName + "_" + i,
                                  Properties = new PipelineProperties()
                                  {
                                      Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
@@ -96,17 +102,15 @@ namespace HybridDR_ADF
 
                                      Activities = new List<Activity>()
                                      {
-                                dLActivities.create_Activity_LoadProcess_3(controlId),
-                                dLActivities.create_Activity_LoadProcess_5(controlId)
+                                dLActivities.create_Activity_LoadProcess_3(controlId, i),
+                                dLActivities.create_Activity_LoadProcess_5(controlId, i)
                 }
                                  }
                              }
                          }
                              );
+                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i);
             }
-
-
-            util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_SQLOUTPUT);
         }
 
     }

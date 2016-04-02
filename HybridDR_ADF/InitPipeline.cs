@@ -29,6 +29,9 @@ namespace HybridDR_ADF
         private static List<String>
                         SOURCE_FOLDER_FILELIST;
 
+        private AzureStorageController
+                        storageController;
+
         static void Main(string[] args)
         {
             InitPipeline initPipeline = new InitPipeline();
@@ -42,7 +45,7 @@ namespace HybridDR_ADF
 
             DualLoadDatasets datasets = initPipeline.createDatasets(client);
             util.setDatasets(datasets);
-            initPipeline.createPipeline(util, DualLoadConfig.PIPELINE_INIT);
+            initPipeline.createPipelines(util, DualLoadConfig.PIPELINE_INIT);
 
             Console.WriteLine("\nPress any key to exit.");
             Console.ReadKey();
@@ -50,8 +53,8 @@ namespace HybridDR_ADF
 
         private void executeDBQuery_Step1()
         {
-            DBQuery dbQuery = new DBQuery();
-            List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_INIT_1);
+            AzureSQLController sqlController = new AzureSQLController();
+            List<Dictionary<string, object>> resultList = sqlController.getResultList(DualLoadConfig.QUERY_INIT_1);
 
             List<Object> controlIdList = new List<Object>();
             foreach (Dictionary<string, object> result in resultList)
@@ -82,8 +85,8 @@ namespace HybridDR_ADF
 
         private void executeStorageQuery_Step2()
         {
-            StorageQuery storageQuery = new StorageQuery();
-            SOURCE_FOLDER_FILELIST = storageQuery.getFilePathList(CONTROL_PROCESS, SOURCE_FOLDER_PATH);
+            storageController = new AzureStorageController();
+            SOURCE_FOLDER_FILELIST = storageController.getFilePathList(CONTROL_PROCESS, SOURCE_FOLDER_PATH);
             Console.WriteLine("SOURCE_FOLDER_FILELIST = " + SOURCE_FOLDER_FILELIST);
         }
 
@@ -91,61 +94,60 @@ namespace HybridDR_ADF
         private DualLoadDatasets createDatasets(DataFactoryManagementClient client)
         {
             DualLoadDatasets datasets = new DualLoadDatasets(client);
-
-            //dualLoadInit.createDataSet_PDW(client);
-            //dualLoadInit.createOutputDataSet(client);
-            //util.createDataSet_BlobStore(client);
-            //datasets.createDataSet_ETLControl();
-            datasets.createDataSet_SqlOutput();
-            //datasets.createDataSet_SourceFolder();
-            datasets.createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH);
+            //datasets.createDataSet_SqlOutput();
+            //datasets.createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH);
             return (datasets);
         }
 
-        private void createPipeline(DualLoadUtil util, String pipelineName)
+        private void createPipelines(DualLoadUtil util, String basePipelineName)
         {
-            Console.WriteLine("Creating " + pipelineName);
-            DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
-            DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
+            //Console.WriteLine("Creating " + basePipelineName);
+            //DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
+            //DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
             DualLoadActivities dLActivities = new DualLoadActivities();
             int i = 0;
             foreach (string file in SOURCE_FOLDER_FILELIST)
             {
+                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, i, 0, 0, 0, DateTimeKind.Local);
+                DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
                 Console.WriteLine("file being processed: " + file);
 
                 util.getDatasets().createDataSet_SourceFolder(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file);
+                util.getDatasets().createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, file);
+                util.getDatasets().createDataSet_Init_SqlDummy(i);
+                Console.WriteLine("Creating Pipeline: " + basePipelineName + "_" + i);
 
-                Console.WriteLine("Creating Pipeline: " + pipelineName + "_" + i);
 
 
                 util.getClient().Pipelines.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
-                     new PipelineCreateOrUpdateParameters()
-                     {
-                         Pipeline = new Pipeline()
-                         {
-                             Name = pipelineName + "_" + i,
-                             Properties = new PipelineProperties()
-                             {
-                                 Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
+                                     new PipelineCreateOrUpdateParameters()
+                                     {
+                                         Pipeline = new Pipeline()
+                                         {
+                                             Name = basePipelineName + "_" + i,
+                                             Properties = new PipelineProperties()
+                                             {
+                                                 Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
 
-                                 // Initial value for pipeline's active period. With this, you won't need to set slice status
-                                 Start = PipelineActivePeriodStartTime,
-                                 End = PipelineActivePeriodEndTime,
+                                                 // Initial value for pipeline's active period. With this, you won't need to set slice status
 
-                                 Activities = new List<Activity>()
-                                 {
-                                 dLActivities.create_Activity_Init_3(CONTROL_ID.ToString(), file),
-                                 dLActivities.create_Activity_Init_4(DualLoadConfig.DATASET_SOURCEFOLDER, DualLoadConfig.DATASET_ToBeProcessedFolder)
-                                 }
-                             }
-                         }
-                     }
-                         );
+                                                 Start = PipelineActivePeriodStartTime,
+                                                 End = PipelineActivePeriodEndTime,
+
+
+                                                 Activities = new List<Activity>()
+                                                 {
+                                    dLActivities.create_Activity_Init_3(CONTROL_ID, file, i),
+                                    dLActivities.create_Activity_Init_4(DualLoadConfig.DATASET_SOURCEFOLDER, DualLoadConfig.DATASET_ToBeProcessedFolder)
+                                                 }
+                                             }
+                                         }
+                                     }
+                                         );
                 util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder);
                 i++;
+                storageController.deleteBlob(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file);
             }
-
-            //util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, "@Todo-OUTPUT DATASET");
             //util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder);
         }
 
