@@ -99,16 +99,15 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_SourceFolder(String container, String folderPath, String file)
+        public void createDataSet_SourceFolder(String container, String folderPath, String file, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_SOURCEFOLDER);
-
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_SOURCEFOLDER + "_" + i);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
                     Dataset = new Dataset()
                     {
-                        Name = DualLoadConfig.DATASET_SOURCEFOLDER,
+                        Name = DualLoadConfig.DATASET_SOURCEFOLDER + "_" + i,
                         Properties = new DatasetProperties()
                         {
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
@@ -128,51 +127,79 @@ namespace HybridDR_ADF
                 });
         }
 
-        public void createDataSet_ToBeProcessedPath(String container, String toBeProcessedFolderPath, String file)
+        public void createDataSet_ToBeProcessedPath(String container, String toBeProcessedFolderPath, String file, String pipelineName, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ToBeProcessedFolder);
-            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
-                new DatasetCreateOrUpdateParameters()
-                {
-                    Dataset = new Dataset()
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName);
+            bool isExternal = pipelineName.Equals(DualLoadConfig.PIPELINE_ARCHIVE + "_" + i) ? true : false;
+            Console.WriteLine("isExternal= " + isExternal);
+            if (isExternal)
+                client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                    new DatasetCreateOrUpdateParameters()
                     {
-                        Name = DualLoadConfig.DATASET_ToBeProcessedFolder,
-                        Properties = new DatasetProperties()
+                        Dataset = new Dataset()
                         {
-                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
-                            TypeProperties = new AzureBlobDataset
+                            Name = DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName,
+                            Properties = new DatasetProperties()
                             {
-                                FolderPath = container + "/" + toBeProcessedFolderPath //"root/ToBeProcessedPath/"
-                            },
-                            Availability = new Availability()
-                            {
-                                Frequency = SchedulePeriod.Hour,
-                                Interval = 1,
+                                LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
+                                External = isExternal,
+                                TypeProperties = new AzureBlobDataset
+                                {
+                                    FolderPath = container + "/" + toBeProcessedFolderPath, //"root/ToBeProcessedPath/"
+                                    FileName = file
+                                },
+                                Availability = new Availability()
+                                {
+                                    Frequency = SchedulePeriod.Hour,
+                                    Interval = 1,
+                                }
                             }
                         }
-                    }
-                });
+                    });
+            else
+            {
+                client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+    new DatasetCreateOrUpdateParameters()
+    {
+        Dataset = new Dataset()
+        {
+            Name = DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName,
+            Properties = new DatasetProperties()
+            {
+                LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
+                TypeProperties = new AzureBlobDataset
+                {
+                    FolderPath = container + "/" + toBeProcessedFolderPath, //"root/ToBeProcessedPath/"
+                },
+                Availability = new Availability()
+                {
+                    Frequency = SchedulePeriod.Hour,
+                    Interval = 1,
+                }
+            }
+        }
+    });
+            }
         }
 
-        public void createDataSet_ArchivedFolder(String container, String folderPath, String file)
+        public void createDataSet_ArchivedFolder(String container, String folderPath, String file, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ArchivedFolder);
-
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ArchivedFolder + "_" + i);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
                     Dataset = new Dataset()
                     {
-                        Name = DualLoadConfig.DATASET_ArchivedFolder,
+                        Name = DualLoadConfig.DATASET_ArchivedFolder + "_" + i,
                         Properties = new DatasetProperties()
                         {
                             LinkedServiceName = DualLoadConfig.LINKEDSERVICE_BlobStore_Name,
                             TypeProperties = new AzureBlobDataset
                             {
-                                FolderPath = container + folderPath,//"root/",
-                                FileName = file//"test.csv"
+                                FolderPath = container + "/" + folderPath,//"root/",
+                                                                          //FileName = file//"test.csv"
                             },
-                            External = true,
+
                             Availability = new Availability()
                             {
                                 Frequency = SchedulePeriod.Hour,
@@ -301,10 +328,48 @@ namespace HybridDR_ADF
                 });
         }
 
+        public void createDataSet_Archive_1_SqlDummy(int i)
+        {
+            Console.WriteLine("Creating " + DualLoadConfig.DATASET_ARCHIVE_1_SQLDUMMY + "_" + i);
+            //Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT + "_" + i);
+            client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
+                new DatasetCreateOrUpdateParameters()
+                {
+                    Dataset = new Dataset()
+                    {
+                        Name = DualLoadConfig.DATASET_ARCHIVE_1_SQLDUMMY + "_" + i,
+                        Properties = new DatasetProperties()
+                        {
+                            LinkedServiceName = DualLoadConfig.LINKEDSERVICE_ControlDB_Name,
+                            TypeProperties = new AzureSqlTableDataset
+                            {
+                                TableName = "Archive_1_Dummy",
+                            }
+                            ,
+                            //External = true,
+                            Availability = new Availability()
+                            {
+                                Frequency = SchedulePeriod.Hour,
+                                Interval = 1,
+                            }
+                            //,
+
+                            //Policy = new Policy()
+                            //{
+                            //    Validation = new ValidationPolicy()
+                            //    {
+                            //        MinimumRows = 1
+                            //    }
+                            //}
+                        }
+                    }
+                });
+        }
+
 
         /**
         * not used currently
-        */
+*/
         public void createOutputDataSet()
         {
             Console.WriteLine("Creating output dataset");

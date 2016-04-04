@@ -35,6 +35,7 @@ namespace HybridDR_ADF
         public static string DATASET_INIT_SQLDUMMY = "Dataset-Init-SqlDummy";
         public static string DATASET_LOAD_1_SQLDUMMY = "Dataset-Load-1-SqlDummy";
         public static string DATASET_LOAD_2_SQLDUMMY = "Dataset-Load-2-SqlDummy";
+        public static string DATASET_ARCHIVE_1_SQLDUMMY = "Dataset-Archive-1-SqlDummy";
 
         public static string DATASET_ETL_Control = "Dataset-ETLControl";
         public static string DATASET_ETL_ControlDetail = "Dataset-ETLControlDetail";
@@ -72,7 +73,7 @@ namespace HybridDR_ADF
         //public static string query_loadprocess_3 = "if(? = 1) begin  update [dbo].[etlcontroldetail] set primaryapsstatus = 2 where id = ? end else begin update [dbo].[etlcontroldetail] set secondaryapsstatus = 2 where id = ? end";
         //public static string query_loadprocess_5 = "if(? = 1) begin  update [dbo].[etlcontroldetail] set primaryapsstatus = 3 where id = ? end else begin update [dbo].[etlcontroldetail] set secondaryapsstatus = 3 where id = ? end";
 
-        public static String QUERY_ARCHIVE_1 = "select ECD.ID as ETLControlDetailID, FileName, EC.ArchivePath from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID  Where ControlProcess = ? and PrimaryAPSStatus = 3 and SecondaryAPSStatus = 3 order by ecd.id";
+        public static String QUERY_ARCHIVE_1 = "select ECD.ID as ETLControlDetailID, FileName, EC.ArchivePath from [dbo].[ETLControl] EC join [dbo].[ETLControlDetail] ECD on ec.id = ECD.ETLControlID  Where ControlProcess = $ControlProcess and PrimaryAPSStatus = 3 and SecondaryAPSStatus = 3 order by ecd.id";
 
         public static String QUERY_ARCHIVE_3 = "Update [dbo].[ETLControlDetail] Set SecondaryAPSStatus = 4, PrimaryAPSStatus = 4, status = 3, FileName = ? Where ID = ?";
 

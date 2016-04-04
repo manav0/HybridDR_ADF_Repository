@@ -61,7 +61,7 @@ namespace HybridDR_ADF
         */
         public Activity create_Activity_Init_3(int controlID, String filePath, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_3);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_3 + "_" + i);
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
             //sprocParams.Add("@ETLControlID", "1");
             //sprocParams.Add("@FileName", "Z:\\DimEmployee\\DimEmployee1.csv");
@@ -81,7 +81,7 @@ namespace HybridDR_ADF
             sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_INIT_3;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_3 + "_" + i;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 
@@ -91,9 +91,9 @@ namespace HybridDR_ADF
         /**
         * CopyActivity from Blob source to Blob sink from Source Folder to ToBeProcessed Folder
         */
-        public Activity create_Activity_Init_4(String sourceFolderDataset, String toBeProcessedFolderDataset)
+        public Activity create_Activity_Init_4(String sourceFolderDataset, String toBeProcessedCompleteFolderDataset, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_4);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_INIT_4 + "_" + i);
 
             Activity activity = new Activity();
 
@@ -104,7 +104,7 @@ namespace HybridDR_ADF
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = toBeProcessedFolderDataset;
+            activityOutput.Name = toBeProcessedCompleteFolderDataset;
             activityOutputs.Add(activityOutput);
 
             CopyActivity copyActivity = new CopyActivity();
@@ -124,7 +124,7 @@ namespace HybridDR_ADF
             //scheduler.Interval = 1;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_INIT_4;
+            activity.Name = DualLoadConfig.ACTIVITY_INIT_4 + "_" + i;
             activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = copyActivity;
@@ -136,7 +136,7 @@ namespace HybridDR_ADF
         //LOAD PROCESS ACTIVITIES
         public Activity create_Activity_LoadProcess_3(string ETlControlID, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_3);
+            Console.WriteLine("Creating/Executing Stored proc: " + DualLoadConfig.ACTIVITY_LOADPROCESS_3 + "_" + i + " with ETlControlID= " + ETlControlID);
 
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
 
@@ -156,7 +156,7 @@ namespace HybridDR_ADF
             sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_3;
+            activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_3 + "_" + i;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 
@@ -165,7 +165,7 @@ namespace HybridDR_ADF
 
         public Activity create_Activity_LoadProcess_5(string ETlControlID, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_LOADPROCESS_5);
+            Console.WriteLine("Creating/Executing Stored proc: " + DualLoadConfig.ACTIVITY_LOADPROCESS_5 + "_" + i + " with ETlControlID= " + ETlControlID);
 
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
 
@@ -185,7 +185,7 @@ namespace HybridDR_ADF
             sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_5;
+            activity.Name = DualLoadConfig.ACTIVITY_LOADPROCESS_5 + "_" + i;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 
@@ -197,20 +197,20 @@ namespace HybridDR_ADF
         /**
         * CopyActivity from Blob source to Blob sink from ToBeProcessed Folder to Archived Folder
         */
-        public Activity create_Activity_Archive_2(String toBeProcessedFolderDataset, String archiveFolderDataset)
+        public Activity create_Activity_Archive_2(String toBeProcessedCompleteFolderDataset, String archiveFolderDataset, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_ARCHIVE_2);
+            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_ARCHIVE_2 + "_" + i);
 
             Activity activity = new Activity();
 
             List<ActivityInput> activityInputs = new List<ActivityInput>();
             ActivityInput activityInput = new ActivityInput();
-            activityInput.Name = toBeProcessedFolderDataset;
+            activityInput.Name = toBeProcessedCompleteFolderDataset;
             activityInputs.Add(activityInput);
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = archiveFolderDataset;
+            activityOutput.Name = archiveFolderDataset + "_" + i;
             activityOutputs.Add(activityOutput);
 
             CopyActivity copyActivity = new CopyActivity();
@@ -230,7 +230,7 @@ namespace HybridDR_ADF
             //scheduler.Interval = 1;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_INIT_4;
+            activity.Name = DualLoadConfig.ACTIVITY_ARCHIVE_2 + "_" + i;
             activity.Inputs = activityInputs;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = copyActivity;
@@ -242,27 +242,27 @@ namespace HybridDR_ADF
         /**
         * Stored Proc Activity - usp_RecordFilesToBeProcessed
         */
-        public Activity create_Activity_Archive_3(int controlDetailID, String fileName)
+        public Activity create_Activity_Archive_3(int controlDetailID, String fileName, int i)
         {
-            Console.WriteLine("Creating " + DualLoadConfig.ACTIVITY_ARCHIVE_3);
+            Console.WriteLine("Creating/Executing Stored proc: " + DualLoadConfig.ACTIVITY_ARCHIVE_3 + "_" + i + " with controlDetailID= " + controlDetailID);
             IDictionary<string, string> sprocParams = new Dictionary<string, string>();
-            sprocParams.Add("@ControlProcess", "1");
-            sprocParams.Add("@Id", controlDetailID.ToString());
-            sprocParams.Add("@Status", "3");
+            sprocParams.Add("@FileName", fileName);
+            sprocParams.Add("@ControlDetailId", controlDetailID.ToString());
+
 
             Activity activity = new Activity();
 
             List<ActivityOutput> activityOutputs = new List<ActivityOutput>();
             ActivityOutput activityOutput = new ActivityOutput();
-            activityOutput.Name = DualLoadConfig.DATASET_LOAD_1_SQLDUMMY;
+            activityOutput.Name = DualLoadConfig.DATASET_ARCHIVE_1_SQLDUMMY + "_" + i;
             activityOutputs.Add(activityOutput);
 
             SqlServerStoredProcedureActivity sqlserverStoredProcActivity = new SqlServerStoredProcedureActivity();
-            sqlserverStoredProcActivity.StoredProcedureName = "dbo.usp_UpdateControlDetailStatus";
+            sqlserverStoredProcActivity.StoredProcedureName = "usp_UpdateToArchiveStatus";
             sqlserverStoredProcActivity.StoredProcedureParameters = sprocParams;
 
 
-            activity.Name = DualLoadConfig.ACTIVITY_ARCHIVE_3;
+            activity.Name = DualLoadConfig.ACTIVITY_ARCHIVE_3 + "_" + i;
             activity.Outputs = activityOutputs;
             activity.TypeProperties = sqlserverStoredProcActivity;
 

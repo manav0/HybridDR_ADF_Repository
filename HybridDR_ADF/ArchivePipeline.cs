@@ -20,7 +20,7 @@ namespace HybridDR_ADF
     {
         private static int CONTROLDETAIL_ID;
         private static String
-                        CONTROL_PROCESS,
+                        CONTROL_PROCESS = "dimemployee",
                         FILENAME,
                         ARCHIVED_FOLDER_PATH,
                         TOBEPROCESSED_FOLDER_PATH = "ToBeProcessed/";
@@ -33,36 +33,26 @@ namespace HybridDR_ADF
             DualLoadUtil util = new DualLoadUtil();
 
             DataFactoryManagementClient client = DualLoadUtil.createDataFactoryManagementClient();
-            util.tearDown(client, DualLoadConfig.PIPELINE_ARCHIVE);
-
-
-            archivePipeline.executeDBQuery_Step1();
-            archivePipeline.executeStorageQuery_Step2();
+            //util.tearDown(client, DualLoadConfig.PIPELINE_ARCHIVE);
 
             DualLoadDatasets datasets = archivePipeline.createDatasets(client);
             util.setDatasets(datasets);
+            archivePipeline.initStorageController();
             archivePipeline.createPipelines(util, DualLoadConfig.PIPELINE_ARCHIVE);
 
             Console.WriteLine("\nPress any key to exit.");
             Console.ReadKey();
         }
 
-        private void executeDBQuery_Step1()
+        private void initStorageController()
         {
-
-
+            storageController = new AzureStorageController();
         }
-
-        private void executeStorageQuery_Step2()
-        {
-
-        }
-
 
         private DualLoadDatasets createDatasets(DataFactoryManagementClient client)
         {
             DualLoadDatasets datasets = new DualLoadDatasets(client);
-            //datasets.createDataSet_SqlOutput();
+            //;datasets.createDataSet_SqlOutput();
             //datasets.createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH);
             return (datasets);
         }
@@ -75,9 +65,9 @@ namespace HybridDR_ADF
             DualLoadActivities dLActivities = new DualLoadActivities();
             int i = 0;
             AzureSQLController sqlController = new AzureSQLController();
-            List<Dictionary<string, object>> resultList = sqlController.getResultList(DualLoadConfig.QUERY_ARCHIVE_1);
+            List<Dictionary<string, object>> resultList = sqlController.getResultList(DualLoadConfig.QUERY_ARCHIVE_1.Replace("$ControlProcess", "'dimEmployee'"));
 
-            List<Object> controlIdList = new List<Object>();
+
             foreach (Dictionary<string, object> result in resultList)
             {
                 foreach (KeyValuePair<string, object> kvp in result)
@@ -96,11 +86,13 @@ namespace HybridDR_ADF
                 //foreach (string file in SOURCE_FOLDER_FILELIST)
                 //{
                 Console.WriteLine("file being processed: " + FILENAME);
+                String pipelineName = basePipelineName + "_" + i;
 
-                util.getDatasets().createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, FILENAME);
-                util.getDatasets().createDataSet_ArchivedFolder(CONTROL_PROCESS, ARCHIVED_FOLDER_PATH, FILENAME);
+                util.getDatasets().createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, FILENAME, pipelineName, i);
+                util.getDatasets().createDataSet_ArchivedFolder(CONTROL_PROCESS, ARCHIVED_FOLDER_PATH, FILENAME, i);
+                util.getDatasets().createDataSet_Archive_1_SqlDummy(i);
 
-                Console.WriteLine("Creating Pipeline: " + basePipelineName + "_" + i);
+                Console.WriteLine("Creating Pipeline: " + pipelineName);
 
 
                 util.getClient().Pipelines.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
@@ -108,7 +100,7 @@ namespace HybridDR_ADF
                      {
                          Pipeline = new Pipeline()
                          {
-                             Name = basePipelineName + "_" + i,
+                             Name = pipelineName,
                              Properties = new PipelineProperties()
                              {
                                  Description = "Archive Pipeline will pull all files to be processed in archived location",
@@ -119,18 +111,17 @@ namespace HybridDR_ADF
 
                                  Activities = new List<Activity>()
                                  {
-                                    dLActivities.create_Activity_Archive_2(TOBEPROCESSED_FOLDER_PATH, ARCHIVED_FOLDER_PATH),
-                                    //dLActivities.create_Activity_Init_4(DualLoadConfig.DATASET_SOURCEFOLDER, DualLoadConfig.DATASET_ToBeProcessedFolder)
+                                    dLActivities.create_Activity_Archive_2(DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName, DualLoadConfig.DATASET_ArchivedFolder, i),
+                                    dLActivities.create_Activity_Archive_3(CONTROLDETAIL_ID, FILENAME, i)
                                  }
                              }
                          }
                      }
                          );
-                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder);
+                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ArchivedFolder + "_" + i);
                 i++;
-                storageController.deleteBlob(CONTROL_PROCESS, ARCHIVED_FOLDER_PATH, FILENAME);
-                //}
-                //util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder);
+
+                storageController.deleteBlob(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, FILENAME);
             }
         }
 

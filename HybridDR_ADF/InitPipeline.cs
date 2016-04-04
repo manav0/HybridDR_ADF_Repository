@@ -111,11 +111,12 @@ namespace HybridDR_ADF
                 DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, i, 0, 0, 0, DateTimeKind.Local);
                 DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
                 Console.WriteLine("file being processed: " + file);
+                String pipelineName = basePipelineName + "_" + i;
 
-                util.getDatasets().createDataSet_SourceFolder(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file);
-                util.getDatasets().createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, file);
+                util.getDatasets().createDataSet_SourceFolder(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file, i);
+                util.getDatasets().createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, file, pipelineName, i);
                 util.getDatasets().createDataSet_Init_SqlDummy(i);
-                Console.WriteLine("Creating Pipeline: " + basePipelineName + "_" + i);
+                Console.WriteLine("Creating Pipeline: " + pipelineName);
 
 
 
@@ -124,7 +125,7 @@ namespace HybridDR_ADF
                                      {
                                          Pipeline = new Pipeline()
                                          {
-                                             Name = basePipelineName + "_" + i,
+                                             Name = pipelineName,
                                              Properties = new PipelineProperties()
                                              {
                                                  Description = "DualLoadInit Pipeline will pull all files to be processed in central location",
@@ -138,13 +139,13 @@ namespace HybridDR_ADF
                                                  Activities = new List<Activity>()
                                                  {
                                     dLActivities.create_Activity_Init_3(CONTROL_ID, file, i),
-                                    dLActivities.create_Activity_Init_4(DualLoadConfig.DATASET_SOURCEFOLDER, DualLoadConfig.DATASET_ToBeProcessedFolder)
+                                    dLActivities.create_Activity_Init_4(DualLoadConfig.DATASET_SOURCEFOLDER + "_" + i, DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName, i)
                                                  }
                                              }
                                          }
                                      }
                                          );
-                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder);
+                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName);
                 i++;
                 storageController.deleteBlob(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file);
             }
