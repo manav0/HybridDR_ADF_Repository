@@ -48,15 +48,6 @@ namespace HybridDR_ADF
                                 Frequency = SchedulePeriod.Hour,
                                 Interval = 1,
                             }
-                            //,
-
-                            //Policy = new Policy()
-                            //{
-                            //    Validation = new ValidationPolicy()
-                            //    {
-                            //        MinimumRows = 1
-                            //    }
-                            //}
                         }
                     }
                 });
@@ -86,7 +77,6 @@ namespace HybridDR_ADF
                                 Interval = 1,
                             }
                             //,
-
                             //Policy = new Policy()
                             //{
                             //    Validation = new ValidationPolicy()
@@ -226,8 +216,6 @@ namespace HybridDR_ADF
                             TypeProperties = new AzureSqlTableDataset
                             {
                                 TableName = "Init_Dummy",
-
-
                             }
                             ,
                             //External = true,
@@ -236,15 +224,6 @@ namespace HybridDR_ADF
                                 Frequency = SchedulePeriod.Hour,
                                 Interval = 1,
                             }
-                            //,
-
-                            //Policy = new Policy()
-                            //{
-                            //    Validation = new ValidationPolicy()
-                            //    {
-                            //        MinimumRows = 1
-                            //    }
-                            //}
                         }
                     }
                 });
@@ -254,7 +233,6 @@ namespace HybridDR_ADF
         public void createDataSet_Load_1_SqlDummy(int i)
         {
             Console.WriteLine("Creating " + DualLoadConfig.DATASET_LOAD_1_SQLDUMMY + "_" + i);
-            //Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT + "_" + i);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
@@ -269,21 +247,11 @@ namespace HybridDR_ADF
                                 TableName = "Load_1_Dummy",
                             }
                             ,
-                            //External = true,
                             Availability = new Availability()
                             {
                                 Frequency = SchedulePeriod.Hour,
                                 Interval = 1,
                             }
-                            //,
-
-                            //Policy = new Policy()
-                            //{
-                            //    Validation = new ValidationPolicy()
-                            //    {
-                            //        MinimumRows = 1
-                            //    }
-                            //}
                         }
                     }
                 });
@@ -293,7 +261,6 @@ namespace HybridDR_ADF
         public void createDataSet_Load_2_SqlDummy(int i)
         {
             Console.WriteLine("Creating " + DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i);
-            //Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT + "_" + i);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
@@ -308,7 +275,6 @@ namespace HybridDR_ADF
                                 TableName = "Load_2_Dummy",
                             }
                             ,
-                            //External = true,
                             Availability = new Availability()
                             {
                                 Frequency = SchedulePeriod.Hour,
@@ -331,7 +297,6 @@ namespace HybridDR_ADF
         public void createDataSet_Archive_1_SqlDummy(int i)
         {
             Console.WriteLine("Creating " + DualLoadConfig.DATASET_ARCHIVE_1_SQLDUMMY + "_" + i);
-            //Console.WriteLine("Creating " + DualLoadConfig.DATASET_SQLOUTPUT + "_" + i);
             client.Datasets.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name,
                 new DatasetCreateOrUpdateParameters()
                 {
@@ -352,15 +317,6 @@ namespace HybridDR_ADF
                                 Frequency = SchedulePeriod.Hour,
                                 Interval = 1,
                             }
-                            //,
-
-                            //Policy = new Policy()
-                            //{
-                            //    Validation = new ValidationPolicy()
-                            //    {
-                            //        MinimumRows = 1
-                            //    }
-                            //}
                         }
                     }
                 });
@@ -369,7 +325,7 @@ namespace HybridDR_ADF
 
         /**
         * not used currently
-*/
+        */
         public void createOutputDataSet()
         {
             Console.WriteLine("Creating output dataset");
@@ -399,7 +355,6 @@ namespace HybridDR_ADF
                         }
                                 }
                             },
-
                             Availability = new Availability()
                             {
                                 Frequency = SchedulePeriod.Hour,

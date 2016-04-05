@@ -16,6 +16,9 @@ using Microsoft.Azure;
 
 namespace HybridDR_ADF
 {
+    /**
+    * Init pipeline begins the dual load process by retrieving a list of flat files stored in a directory and recording the location and filename in the control db.
+    */
     class InitPipeline
     {
         private static int CONTROL_ID;
@@ -37,7 +40,7 @@ namespace HybridDR_ADF
             InitPipeline initPipeline = new InitPipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = DualLoadUtil.createDataFactoryManagementClient();
+            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
             //util.tearDown(client, DualLoadConfig.PIPELINE_INIT);
 
             initPipeline.executeDBQuery_Step1();
@@ -101,14 +104,11 @@ namespace HybridDR_ADF
 
         private void createPipelines(DualLoadUtil util, String basePipelineName)
         {
-            //Console.WriteLine("Creating " + basePipelineName);
-            //DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
-            //DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
             DualLoadActivities dLActivities = new DualLoadActivities();
             int i = 0;
             foreach (string file in SOURCE_FOLDER_FILELIST)
             {
-                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, i, 0, 0, 0, DateTimeKind.Local);
+                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 1, 0, 0, 0, DateTimeKind.Local).AddMinutes(60);
                 DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
                 Console.WriteLine("file being processed: " + file);
                 String pipelineName = basePipelineName + "_" + i;
@@ -149,7 +149,6 @@ namespace HybridDR_ADF
                 i++;
                 storageController.deleteBlob(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file);
             }
-            //util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder);
         }
 
     }

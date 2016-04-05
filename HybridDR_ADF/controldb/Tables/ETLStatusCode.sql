@@ -1,0 +1,29 @@
+﻿USE [clouddr-control-db]
+GO
+
+/****** Object:  Table [dbo].[ETLStatusCode]    Script Date: 4/5/2016 3:54:28 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ETLStatusCode](
+	[Id] [smallint] IDENTITY(1,1) NOT NULL,
+	[DescShort] [varchar](20) NOT NULL,
+	[DescLong] [varchar](200) NOT NULL,
+ CONSTRAINT [PK_ETLStatusCode] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+)
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

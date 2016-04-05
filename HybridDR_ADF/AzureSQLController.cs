@@ -6,9 +6,11 @@ using System.Linq;
 
 namespace HybridDR_ADF
 {
+    /**
+    * central hub for initiating queries against Azure SQL DBs
+    */
     class AzureSQLController
     {
-
         static void Main(string[] args)
         {
             AzureSQLController sqlController = new AzureSQLController();
@@ -20,7 +22,6 @@ namespace HybridDR_ADF
         {
             int CONTROLDETAIL_ID = 0;
             String FILENAME = "", ARCHIVE_FOLDER_PATH = "";
-
 
             List<Dictionary<string, object>> resultList = getResultList(DualLoadConfig.QUERY_ARCHIVE_1);
 
@@ -40,8 +41,6 @@ namespace HybridDR_ADF
                     Console.WriteLine("ARCHIVE_FOLDER_PATH = " + ARCHIVE_FOLDER_PATH);
                 }
             }
-
-
         }
 
         public List<Dictionary<String, object>> getResultList(String queryString)

@@ -121,6 +121,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureLoginController.cs" />
     <Compile Include="AzureStorageController.cs" />
     <Compile Include="DualLoadConfig.cs" />
     <Compile Include="DualLoadDatasets.cs" />

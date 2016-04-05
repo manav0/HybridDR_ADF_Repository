@@ -16,6 +16,9 @@ using Microsoft.Azure;
 
 namespace HybridDR_ADF
 {
+    /**
+    * Archive Pipeline reviews the control tables to determine what flat files have been processed by both systems.  If the file has been processed by both systems, the flat file will be moved to an archive location.  If the file has only been processed by one system, the files will remain on the disk until the other system can process the file. Ends the Dual load ETL process by moving all processed files to the archive path. 
+    */
     class ArchivePipeline
     {
         private static int CONTROLDETAIL_ID;
@@ -32,7 +35,7 @@ namespace HybridDR_ADF
             ArchivePipeline archivePipeline = new ArchivePipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = DualLoadUtil.createDataFactoryManagementClient();
+            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
             //util.tearDown(client, DualLoadConfig.PIPELINE_ARCHIVE);
 
             DualLoadDatasets datasets = archivePipeline.createDatasets(client);
@@ -52,16 +55,11 @@ namespace HybridDR_ADF
         private DualLoadDatasets createDatasets(DataFactoryManagementClient client)
         {
             DualLoadDatasets datasets = new DualLoadDatasets(client);
-            //;datasets.createDataSet_SqlOutput();
-            //datasets.createDataSet_ToBeProcessedPath(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH);
             return (datasets);
         }
 
         private void createPipelines(DualLoadUtil util, String basePipelineName)
         {
-            //Console.WriteLine("Creating " + basePipelineName);
-            DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
-            DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
             DualLoadActivities dLActivities = new DualLoadActivities();
             int i = 0;
             AzureSQLController sqlController = new AzureSQLController();
@@ -83,8 +81,9 @@ namespace HybridDR_ADF
                     Console.WriteLine("ARCHIVED_FOLDER_PATH = " + ARCHIVED_FOLDER_PATH);
                 }
 
-                //foreach (string file in SOURCE_FOLDER_FILELIST)
-                //{
+                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 1, 0, 0, 0, DateTimeKind.Local).AddMinutes(60);
+                DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
+
                 Console.WriteLine("file being processed: " + FILENAME);
                 String pipelineName = basePipelineName + "_" + i;
 

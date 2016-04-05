@@ -16,6 +16,10 @@ using Microsoft.Azure;
 
 namespace HybridDR_ADF
 {
+    /**
+    * DualLoadDriver – Process each of the flat files on a given PDW.
+    Load Process Pipeline should be run on both DC’s.  The pipeline reads the central control DB and determines the flat files that need to be loaded into the PDW that the SSIS server is responsible for loading.  
+    */
     class LoadProcessPipeline
     {
         private static char PdwId = '1';
@@ -26,7 +30,7 @@ namespace HybridDR_ADF
             LoadProcessPipeline loadProcessPipeline = new LoadProcessPipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = DualLoadUtil.createDataFactoryManagementClient();
+            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
             util.tearDown(client, DualLoadConfig.PIPELINE_LOADPROCESS);
             DualLoadDatasets datasets = loadProcessPipeline.createDatasets(client);
             util.setDatasets(datasets);
@@ -40,23 +44,16 @@ namespace HybridDR_ADF
         private DualLoadDatasets createDatasets(DataFactoryManagementClient client)
         {
             DualLoadDatasets datasets = new DualLoadDatasets(client);
-            //datasets.createDataSet_ETLControl();
             datasets.createDataSet_ETLControlDetail();
-            //datasets.createDataSet_SqlDummy();
-            //datasets.createDataSet_root();
-            //datasets.createDataSet_ToBeProcessedPath();
             return (datasets);
         }
 
         private void createPipelines(DualLoadUtil util, String basePipelineName)
         {
-            //DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 0, 0, 0, 0, DateTimeKind.Utc);
-            //DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
             DualLoadActivities dLActivities = new DualLoadActivities();
 
 
             AzureSQLController sqlController = new AzureSQLController();
-            //List<Dictionary<string, object>> resultList = dbQuery.getResultList(DualLoadConfig.QUERY_LOADPROCESS_1.Replace('?', PdwId));
 
             List<Dictionary<string, object>> resultList = sqlController.getResultList(DualLoadConfig.QUERY_LOADPROCESS_2.Replace("$PdwId", "1").Replace("$ControlProcess", "'DimEmployee'"));
 
@@ -78,7 +75,7 @@ namespace HybridDR_ADF
 
             for (int i = 0; i < controlIdList.Count; i++)
             {
-                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 10, i, 0, 0, 0, DateTimeKind.Local);
+                DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 1, 0, 0, 0, DateTimeKind.Local).AddMinutes(60);
                 DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
                 string controlId = controlIdList.ElementAt(i).ToString();
                 Console.WriteLine("controlId " + controlId);
@@ -112,6 +109,5 @@ namespace HybridDR_ADF
                 util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i);
             }
         }
-
     }
 }

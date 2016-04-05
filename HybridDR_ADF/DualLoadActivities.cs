@@ -17,10 +17,13 @@ using Microsoft.Azure;
 
 namespace HybridDR_ADF
 {
+    /**
+    * all activities used by Dual Load data Factory & pipelines
+    */
     class DualLoadActivities
     {
 
-        //INIT ACTIVITIES
+        //INIT PIPELINE ACTIVITIES
 
         /**
         * not used currently
@@ -58,6 +61,7 @@ namespace HybridDR_ADF
 
         /**
         * Stored Proc Activity - usp_RecordFilesToBeProcessed
+        * Add record to the ETLControlDetail table for the files that need to be processed
         */
         public Activity create_Activity_Init_3(int controlID, String filePath, int i)
         {
@@ -133,7 +137,10 @@ namespace HybridDR_ADF
             return (activity);
         }
 
-        //LOAD PROCESS ACTIVITIES
+        //LOAD PROCESS PIPELINE ACTIVITIES
+        /**
+        * Stored Proc Activity - usp_UpdateControlDetailStatus to PROCESSING
+        */
         public Activity create_Activity_LoadProcess_3(string ETlControlID, int i)
         {
             Console.WriteLine("Creating/Executing Stored proc: " + DualLoadConfig.ACTIVITY_LOADPROCESS_3 + "_" + i + " with ETlControlID= " + ETlControlID);
@@ -142,7 +149,7 @@ namespace HybridDR_ADF
 
             sprocParams.Add("@ControlProcess", "1");
             sprocParams.Add("@Id", ETlControlID);
-            sprocParams.Add("@Status", "2");
+            sprocParams.Add("@Status", DualLoadConfig.STATUS_PROCESSING.ToString());
 
             Activity activity = new Activity();
 
@@ -163,6 +170,9 @@ namespace HybridDR_ADF
             return (activity);
         }
 
+        /**
+        * Stored Proc Activity - usp_UpdateControlDetailStatus to COMPLETE
+        */
         public Activity create_Activity_LoadProcess_5(string ETlControlID, int i)
         {
             Console.WriteLine("Creating/Executing Stored proc: " + DualLoadConfig.ACTIVITY_LOADPROCESS_5 + "_" + i + " with ETlControlID= " + ETlControlID);
@@ -171,7 +181,7 @@ namespace HybridDR_ADF
 
             sprocParams.Add("@ControlProcess", "1");
             sprocParams.Add("@Id", ETlControlID);
-            sprocParams.Add("@Status", "3");
+            sprocParams.Add("@Status", DualLoadConfig.STATUS_COMPLETE.ToString());
 
             Activity activity = new Activity();
 
@@ -193,7 +203,7 @@ namespace HybridDR_ADF
         }
 
 
-        //ARCHIVE ACTIVITIES
+        //ARCHIVE PIPELINE ACTIVITIES
         /**
         * CopyActivity from Blob source to Blob sink from ToBeProcessed Folder to Archived Folder
         */
@@ -240,7 +250,7 @@ namespace HybridDR_ADF
         }
 
         /**
-        * Stored Proc Activity - usp_RecordFilesToBeProcessed
+        * Stored Proc Activity - usp_UpdateToArchiveStatus to ARCHIVED
         */
         public Activity create_Activity_Archive_3(int controlDetailID, String fileName, int i)
         {
@@ -268,37 +278,5 @@ namespace HybridDR_ADF
 
             return (activity);
         }
-
-        //public activity create_activity_loadprocess_5()
-        //{
-        //    console.writeline("creating " + dualloadconfig.activity_loadprocess_5);
-
-        //    activity activity = new activity();
-
-        //    list<activityinput> activityinputs = new list<activityinput>();
-        //    activityinput activityinput = new activityinput();
-        //    activityinput.name = dualloadconfig.dataset_etl_control;
-        //    activityinputs.add(activityinput);
-        //    sqlsource source = new sqlsource();
-        //    source.sqlreaderquery = dualloadconfig.query_loadprocess_5.replace('?', '3');
-
-        //    list<activityoutput> activityoutputs = new list<activityoutput>();
-        //    activityoutput activityoutput = new activityoutput();
-        //    activityoutput.name = dualloadconfig.dataset_sqldummy;
-        //    activityoutputs.add(activityoutput);
-        //    sqlsink sink = new sqlsink();
-
-        //    copyactivity copyactivity = new copyactivity();
-        //    copyactivity.source = source;
-        //    copyactivity.sink = sink;
-
-        //    activity.name = dualloadconfig.activity_loadprocess_5;
-        //    activity.inputs = activityinputs;
-        //    activity.outputs = activityoutputs;
-        //    activity.typeproperties = copyactivity;
-
-        //    return (activity);
-        //}
-
     }
 }

@@ -2,69 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
+
 using System.Configuration;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Threading;
 
 using Microsoft.Azure.Management.DataFactories;
 using Microsoft.Azure.Management.DataFactories.Models;
 using Microsoft.Azure.Management.DataFactories.Common.Models;
 
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+
 using Microsoft.Azure;
 
 
 namespace HybridDR_ADF
 {
+    /**
+    * utility methods for Dual Load Data Factory
+    */
     class DualLoadUtil
     {
-        private static DataFactoryManagementClient client;
         private DualLoadDatasets datasets;
+        private static DataFactoryManagementClient client;
+        private AzureLoginController loginController;
 
-        public DataFactoryManagementClient getClient()
+        public DualLoadUtil()
         {
-            return (client);
+            loginController = new AzureLoginController();
         }
-
-        public DualLoadDatasets getDatasets()
-        {
-            return (datasets);
-        }
-
-        public void setDatasets(DualLoadDatasets datasets)
-        {
-            this.datasets = datasets;
-        }
-
-
-        public static DataFactoryManagementClient createDataFactoryManagementClient()
-        {
-            if (client != null)
-            {
-                Console.WriteLine("Reusing DataFactoryManagementClient");
-                return (client);
-            }
-            Console.WriteLine("Creating DataFactoryManagementClient");
-            TokenCloudCredentials aadTokenCredentials = new TokenCloudCredentials(DualLoadConfig.SUBSCRIPTION_ID, GetAuthorizationHeader(DualLoadConfig.AD_TENANT_ID));
-
-            Uri resourceManagerUri = new Uri(ConfigurationManager.AppSettings["ResourceManagerEndpoint"]);
-
-            // create data factory management client
-            return (client = new DataFactoryManagementClient(aadTokenCredentials, resourceManagerUri));
-        }
-
-        public void tearDown(DataFactoryManagementClient client, String pipelineName)
-        {
-            Console.WriteLine("Tearing down " + pipelineName + "_0");
-            //client.DataFactories.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name);
-            client.Pipelines.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, pipelineName + "_0");
-            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_ETL_ControlDetail);
-            //client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_INIT_SQLDUMMY);
-            //client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_SQLDUMMY2);
-
-        }
-
 
         public void showInteractiveOutput(DateTime PipelineActivePeriodStartTime, DateTime PipelineActivePeriodEndTime, String outputDataSetName)
         {
@@ -130,7 +96,7 @@ namespace HybridDR_ADF
         {
             // create a data factory
             Console.WriteLine("Creating a new data factory: " + DualLoadConfig.DATAFACTORY_Name);
-            client = createDataFactoryManagementClient();
+            client = AzureLoginController.createDataFactoryManagementClient();
             client.DataFactories.CreateOrUpdate(DualLoadConfig.RESOURCEGROUP_Name,
                 new DataFactoryCreateOrUpdateParameters()
                 {
@@ -180,38 +146,27 @@ namespace HybridDR_ADF
             );
         }
 
-        public static string GetAuthorizationHeader(String AD_TENANT_ID)
+        public DataFactoryManagementClient getClient()
         {
-            AuthenticationResult result = null;
-            var thread = new Thread(() =>
-            {
-                try
-                {
-                    var context = new AuthenticationContext(ConfigurationManager.AppSettings["ActiveDirectoryEndpoint"] + AD_TENANT_ID);
+            return (loginController.getClient());
+        }
 
-                    result = context.AcquireToken(
-                        resource: ConfigurationManager.AppSettings["WindowsManagementUri"],
-                        clientId: ConfigurationManager.AppSettings["AdfClientId"],
-                        redirectUri: new Uri(ConfigurationManager.AppSettings["RedirectUri"]),
-                        promptBehavior: PromptBehavior.Always);
-                }
-                catch (Exception threadEx)
-                {
-                    Console.WriteLine(threadEx.Message);
-                }
-            });
+        public void tearDown(DataFactoryManagementClient client, String pipelineName)
+        {
+            Console.WriteLine("Tearing down " + pipelineName + "_0");
+            client.Pipelines.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, pipelineName + "_0");
+            client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_ETL_ControlDetail);
+            //client.Datasets.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, DualLoadConfig.DATASET_INIT_SQLDUMMY);
+        }
 
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Name = "AcquireTokenThread";
-            thread.Start();
-            thread.Join();
+        public DualLoadDatasets getDatasets()
+        {
+            return (datasets);
+        }
 
-            if (result != null)
-            {
-                return result.AccessToken;
-            }
-
-            throw new InvalidOperationException("Failed to acquire token");
+        public void setDatasets(DualLoadDatasets datasets)
+        {
+            this.datasets = datasets;
         }
     }
 }
