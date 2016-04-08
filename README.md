@@ -137,20 +137,16 @@ Basic Example for ‘create and update’ of ADF components programmatically [*h
 
 **Azure Portal snapshots for HybridDR Data Factory**
 
+
+
+
 **HybridDR Data Factory:** 
+
 ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/1.png)
 
 
-
-
-
-
-
-
-
-
-
 **HybridDR Data Factory (Diagram view):**
+
 ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/2.png)
 
 
@@ -160,16 +156,19 @@ Basic Example for ‘create and update’ of ADF components programmatically [*h
 
 
 **Init Pipeline:** 
+
 ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/3.png)
 
 
 
+
 **Load Pipeline:**
+
 ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/4.png)
 
 
 
 
-
 **Archive Pipeline:**
+
  ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/5.png)
