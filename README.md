@@ -1,9 +1,7 @@
 APS DR framework- Implementation using ADF pipelines
 ====================================================
 
-OBJECTIVE
-=========
-
+**OBJECTIVE**
 The framework presents the Disaster Recovery (DR) solution architecture
 for Microsoft’s Analytics Platform System (APS). While there are several
 DR Architectures available for APS; this IP focuses on Dual Load
@@ -14,10 +12,8 @@ systems with an ETL workflow implementation using Azure Data Factory
 
  
 
-DUAL LOAD DR FRAMEWORK
-
+**DUAL LOAD DR FRAMEWORK**
 Dual Load framework involves
-
 a.  A process that pulls all the source system data to be processed in a
     > central location. When dual loading two systems, the dual ETL
     > process will not pull the data at the same rate or at exactly the
@@ -51,8 +47,7 @@ c.  The dual load process is accomplished by 3 separate basic workflows
         > been processed by one system, the files will remain on the
         > disk until the other system can process the file.
 
-DESIGN CHALLENGES using ADF
-
+**DESIGN CHALLENGES using ADF**
 DR framework processing should not be limited to pre-defined source data
 but must be able to process new flat files originating from source
 system. For this to be accomplished using ADF technology- ADF components
@@ -63,7 +58,7 @@ product team- "Both these features (looping, state passing, etc) are in
 design phases as part of us expanding the ADF app model. Too early to
 say yet though re: release dates, etc. "
 
-**Solution:** To manage the requirement to be able to process changing
+Solution: To manage the requirement to be able to process changing
 or new files from source dynamically I needed to “unroll” the loop into
 N pipelines (N being dynamic number based on new files at source). The
 dynamicity of the solution was accomplished by
@@ -72,8 +67,7 @@ Datasets & Linked Services programmatically using ADF SDK).
 
  
 
-SETUP
-
+**SETUP**
 -   Azure Storage account for blob data files and Azure SQL for Control
     > DB can be created directly from Azure Portal
 
@@ -119,7 +113,7 @@ SETUP
     > and end times, or (2) scheduling section of activities, or (3)
     > changing dataset availability section
 
-FINAL SOLUTION
+**FINAL SOLUTION**
 
 > Here is the link to Github Repository for the solution:
 >
@@ -148,8 +142,7 @@ FINAL SOLUTION
 -   Data Factory component names, sql tables, or updates to queries can
     > also be performed centrally in DualLoadConfig.cs.
 
-REFERENCES
-
+**REFERENCES**
 > ADF SDK 
 >
 > [*https://msdn.microsoft.com/en-us/library/dn883654.aspx*](https://msdn.microsoft.com/en-us/library/dn883654.aspx)
