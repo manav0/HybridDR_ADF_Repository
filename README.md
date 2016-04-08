@@ -136,6 +136,9 @@ Configuration:
 
 **REFERENCES**
 
+Design and implementation of DR framework using SSIS by Andy Isley, SA, DIGP
+[*https://github.com/aisley/Hybrid_DR_APS_SQLDW.git*](https://github.com/aisley/Hybrid_DR_APS_SQLDW.git)
+
 ADF SDK 
 [*https://msdn.microsoft.com/en-us/library/dn883654.aspx*](https://msdn.microsoft.com/en-us/library/dn883654.aspx)
 
