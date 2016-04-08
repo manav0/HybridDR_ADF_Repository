@@ -6,14 +6,15 @@ APS DR framework- Implementation using ADF pipelines
 The framework presents the Disaster Recovery (DR) solution architecture
 for Microsoft’s Analytics Platform System (APS). While there are several
 DR Architectures available for APS; this IP focuses on Dual Load
-approach implementation. The Dual Load solution focusses on loading and
-tracking each flat data file into both the Primary & Secondary APS
-systems with an ETL workflow implementation using Azure Data Factory
-(ADF)
+approach implementation.    
 
- 
+The Dual Load solution ensures loading and step-by-step tracking of each flat data file into both the Primary & Secondary APS systems with an ETL workflow implementation using Azure Data Factory (ADF)
 
-**DUAL LOAD DR FRAMEWORK** is accomplished by following processes:
+
+
+**DUAL LOAD DR FRAMEWORK**
+
+Dual load framework is accomplished by following processes:
 
 a.  A process that pulls all the source system data to be processed in a
     > central location. When dual loading two systems, the dual ETL
