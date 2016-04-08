@@ -47,6 +47,9 @@ c.  The dual load process implemented with 3 separate workflows or base pipeline
         > been processed by one system, the files will remain on the
         > disk until the other system can process the file.
 
+
+
+
 **DESIGN CHALLENGES using ADF**
 
 DR framework processing should not be limited to pre-defined source data
@@ -66,7 +69,8 @@ dynamicity of the solution was accomplished by
 creating/updating/monitoring Data Factory, Pipelines, Activities,
 Datasets & Linked Services programmatically using ADF SDK).
 
- 
+
+
 
 **SETUP**
 
@@ -105,6 +109,10 @@ Datasets & Linked Services programmatically using ADF SDK).
     requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
     changing dataset availability section
 
+
+ 
+ 
+
 **FINAL SOLUTION**
 
 Here is the link to Github Repository for the solution:
@@ -123,6 +131,9 @@ Configuration:
 -   The connection strings for Control database and Azure Blob storage account can be modified in DualLoadConfig.cs.
 
 -   Data Factory component names, sql tables, or updates to queries can also be performed centrally in DualLoadConfig.cs.
+
+
+
 
 **REFERENCES**
 
