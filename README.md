@@ -133,3 +133,43 @@ ADF SDK
 Link for getting the ADF SDK as nugget package [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
 
 Basic Example for ‘create and update’ of ADF components programmatically [*https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/*](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/)
+
+
+**Azure Portal snapshots for HybridDR Data Factory**
+
+**HybridDR Data Factory:** 
+
+
+
+
+
+
+
+
+
+
+
+
+**HybridDR Data Factory (Diagram view):**
+ 
+
+
+
+
+
+
+
+**Init Pipeline:** 
+
+
+
+
+**Load Pipeline:**
+ 
+
+
+
+
+
+**Archive Pipeline:**
+ 
