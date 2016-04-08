@@ -102,8 +102,7 @@ Datasets & Linked Services programmatically using ADF SDK).
 
 -   For create new Data Factory or tear down existing factory & Linked Services, use AzureDataFactoryFoundry program
 
--   To create all ADF pipelines required for Dual Load Process- Execute
-    Init, Load Process, and Archive Pipeline programs in sequence .
+-   To create all ADF pipelines required for Dual Load Process- Execute Init, Load Process, and Archive Pipeline programs in sequence .
 
 -   Further, Scheduling the execution of pipelines based on business
     requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
@@ -117,10 +116,10 @@ Datasets & Linked Services programmatically using ADF SDK).
 
 Here is the link to Github Repository for the solution:
 [*https://github.com/manav0/HybridDR\_ADF\_Repository*](https://github.com/manav0/HybridDR_ADF_Repository)
+
 Above repository has complete Visual Studio project containing
 
--   All the code artifacts for Hybrid DR implementation using Azure and
-    > Azure Data Factory .NET SDKs
+-   All the code artifacts for Hybrid DR implementation using Azure and Azure Data Factory .NET SDKs
 
 -   All the table DDLs and stored procedures for Control Database.
 
@@ -137,6 +136,9 @@ Configuration:
 
 **REFERENCES**
 
-ADF SDK [*https://msdn.microsoft.com/en-us/library/dn883654.aspx*](https://msdn.microsoft.com/en-us/library/dn883654.aspx)
+ADF SDK 
+[*https://msdn.microsoft.com/en-us/library/dn883654.aspx*](https://msdn.microsoft.com/en-us/library/dn883654.aspx)
+
 Link for getting the ADF SDK as nugget package [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
+
 Basic Example for ‘create and update’ of ADF components programmatically [*https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/*](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/)
