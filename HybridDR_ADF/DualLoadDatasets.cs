@@ -16,6 +16,9 @@ using Microsoft.Azure;
 
 namespace HybridDR_ADF
 {
+    /**
+    * all datasets used by Dual Load data Factory & pipelines
+    */
     class DualLoadDatasets
     {
 
