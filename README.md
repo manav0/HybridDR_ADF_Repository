@@ -2,6 +2,7 @@ APS DR framework- Implementation using ADF pipelines
 ====================================================
 
 **OBJECTIVE**
+
 The framework presents the Disaster Recovery (DR) solution architecture
 for Microsoft’s Analytics Platform System (APS). While there are several
 DR Architectures available for APS; this IP focuses on Dual Load
@@ -12,8 +13,8 @@ systems with an ETL workflow implementation using Azure Data Factory
 
  
 
-**DUAL LOAD DR FRAMEWORK**
-Dual Load framework involves
+**DUAL LOAD DR FRAMEWORK** is accomplished by following processes:
+
 a.  A process that pulls all the source system data to be processed in a
     > central location. When dual loading two systems, the dual ETL
     > process will not pull the data at the same rate or at exactly the
@@ -26,8 +27,7 @@ a.  A process that pulls all the source system data to be processed in a
 b.  A central Monitoring or control DB process is used to keep track of
     > when each flat file gets loaded on each of the APS systems.
 
-c.  The dual load process is accomplished by 3 separate basic workflows
-    > or pipelines:
+c.  The dual load process implemented with 3 separate workflows or base pipelines:
 
     i.  **Init Workflow Pipeline** begins the dual load process by
         > retrieving a list of flat files stored in a directory and
@@ -48,6 +48,7 @@ c.  The dual load process is accomplished by 3 separate basic workflows
         > disk until the other system can process the file.
 
 **DESIGN CHALLENGES using ADF**
+
 DR framework processing should not be limited to pre-defined source data
 but must be able to process new flat files originating from source
 system. For this to be accomplished using ADF technology- ADF components
@@ -68,90 +69,63 @@ Datasets & Linked Services programmatically using ADF SDK).
  
 
 **SETUP**
--   Azure Storage account for blob data files and Azure SQL for Control
-    > DB can be created directly from Azure Portal
 
--   All DDLs & stored procedures (available in VS project) can be loaded
-    > on Control DB by connecting thru SQL Server management Studio.
-    > Sample DMLs are also provided for sample data loading.
+-   Azure Storage account for blob data files and Azure SQL for Control DB can be created directly from Azure Portal
+
+-   All DDLs & stored procedures (available in VS project) can be loaded on Control DB by connecting thru SQL Server management Studio. Sample DMLs are also provided for sample data loading.
 
 -   Creating Data Factory:
 
-> Prerequisites
+    Prerequisites
 
 -   Visual Studio 2015
 
--   install Azure .NET SDK (from [*MS download
-    > site*](https://azure.microsoft.com/en-us/downloads/))
+-   install Azure .NET SDK (from [*MS download site*](https://azure.microsoft.com/en-us/downloads/))
 
 -   install NuGet packages for Azure Data Factory
 
-    -   Click Tools, point to NuGet Package Manager, and click Package
-        > Manager Console.
+    -   Click Tools, point to NuGet Package Manager, and click Package Manager Console.
 
-    -   In the Nuget Package Manager Console, download the latest ADF
-        > Management nuget.
+    -   In the Nuget Package Manager Console, download the latest ADF Management nuget.
 
-> Install-Package Microsoft.Azure.Management.DataFactories\
-> Install-Package Microsoft.IdentityModel.Clients.ActiveDirectory
+            Install-Package Microsoft.Azure.Management.DataFactories
+            Install-Package Microsoft.IdentityModel.Clients.ActiveDirectory
 
--   (Optional) Download latest Azure Data Factory plugin for Visual
-    > Studio 2015 (Tools -&gt; Extensions and
-    > Updates -&gt; Online -&gt; Visual Studio Gallery -&gt;Microsoft
-    > Azure Data Factory Tools for Visual Studio)
+-   (Optional) Download latest Azure Data Factory plugin for Visual Studio 2015 (Tools -&gt; Extensions and
+    Updates -&gt; Online -&gt; Visual Studio Gallery -&gt;Microsoft Azure Data Factory Tools for Visual Studio)
 
 <!-- -->
 
--   For create new Data Factory or tear down existing factory & Linked
-    > Services, use AzureDataFactoryFoundry program
+-   For create new Data Factory or tear down existing factory & Linked Services, use AzureDataFactoryFoundry program
 
 -   To create all ADF pipelines required for Dual Load Process- Execute
-    > Init, Load Process, and Archive Pipeline programs in sequence .
+    Init, Load Process, and Archive Pipeline programs in sequence .
 
 -   Further, Scheduling the execution of pipelines based on business
-    > requirement can be done by either: (1) modifying pipeline start
-    > and end times, or (2) scheduling section of activities, or (3)
-    > changing dataset availability section
+    requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
+    changing dataset availability section
 
 **FINAL SOLUTION**
 
-> Here is the link to Github Repository for the solution:
->
-> [*https://github.com/manav0/HybridDR\_ADF\_Repository*](https://github.com/manav0/HybridDR_ADF_Repository)
->
->  
->
-> Above repository has complete Visual Studio project containing
+Here is the link to Github Repository for the solution:
+[*https://github.com/manav0/HybridDR\_ADF\_Repository*](https://github.com/manav0/HybridDR_ADF_Repository)
+Above repository has complete Visual Studio project containing
 
 -   All the code artifacts for Hybrid DR implementation using Azure and
     > Azure Data Factory .NET SDKs
 
 -   All the table DDLs and stored procedures for Control Database.
 
->  
->
-> Configuration:
+Configuration:
 
--   The same code can be configured for different Azure subscriptions by
-    > modifying the Subscription & Tenant Ids config fields
-    > in App.config.
+-   The same code can be configured for different Azure subscriptions by modifying the Subscription & Tenant Ids config fields in App.config.
 
--   The connection strings for Control database and Azure Blob storage
-    > account can be modified in DualLoadConfig.cs.
+-   The connection strings for Control database and Azure Blob storage account can be modified in DualLoadConfig.cs.
 
--   Data Factory component names, sql tables, or updates to queries can
-    > also be performed centrally in DualLoadConfig.cs.
+-   Data Factory component names, sql tables, or updates to queries can also be performed centrally in DualLoadConfig.cs.
 
 **REFERENCES**
-> ADF SDK 
->
-> [*https://msdn.microsoft.com/en-us/library/dn883654.aspx*](https://msdn.microsoft.com/en-us/library/dn883654.aspx)
->
-> Link for getting the ADF SDK as nugget package 
->
-> [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
->
-> Basic Example for ‘create and update’ of ADF components
-> programmatically 
->
-> [*https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/*](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/)
+
+ADF SDK [*https://msdn.microsoft.com/en-us/library/dn883654.aspx*](https://msdn.microsoft.com/en-us/library/dn883654.aspx)
+Link for getting the ADF SDK as nugget package [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
+Basic Example for ‘create and update’ of ADF components programmatically [*https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/*](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/)
