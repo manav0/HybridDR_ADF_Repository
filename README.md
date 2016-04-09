@@ -17,36 +17,23 @@ The Dual Load solution ensures loading and step-by-step tracking of each flat da
 Dual load framework is accomplished by following processes:
 
 a.  A process that pulls all the source system data to be processed in a
-    > central location. When dual loading two systems, the dual ETL
-    > process will not pull the data at the same rate or at exactly the
-    > same time. Therefore, having a central process that pulls the data
-    > and generates a flat file that both systems use, the potential of
-    > one system being different than the other will be lessened. Using
-    > flat files allows easy method to ensure both the Primary and
+    central location. When dual loading two systems, the dual ETL
+    process will not pull the data at the same rate or at exactly the
+    same time. Therefore, having a central process that pulls the data
+    and generates a flat file that both systems use, the potential of
+    one system being different than the other will be lessened. Using
+    flat files allows easy method to ensure both the Primary and
     > Secondary PDW systems stay 100% in sync.
 
-b.  A central Monitoring or control DB process is used to keep track of
-    > when each flat file gets loaded on each of the APS systems.
+b.  A central Monitoring or control DB process is used to keep track of when each flat file gets loaded on each of the APS systems.
 
 c.  The dual load process implemented with 3 separate workflows or base pipelines:
 
-    i.  **Init Workflow Pipeline** begins the dual load process by
-        > retrieving a list of flat files stored in a directory and
-        > recording the location and filename in the control db.
+    i.  **Init Workflow Pipeline** begins the dual load process by retrieving a list of flat files stored in a directory and recording the location and filename in the control db.
 
-    ii. **Load Process Workflow Pipeline** reads the central control DB
-        > and determines the flat files that need to be loaded into
-        > the PDW. Should one of the PDW go offline, no steps will need
-        > to be taken. When the PDW comes back online, the workflow will
-        > process the files that have not been processed for the
-        > given PDW.
+    ii. **Load Process Workflow Pipeline** reads the central control DB and determines the flat files that need to be loaded into the PDW. Should one of the PDW go offline, no steps will need to be taken. When the PDW comes back online, the workflow will process the files that have not been processed for the given PDW.
 
-    iii. **Archive Workflow Pipeline** reviews the control tables to
-        > determine what flat files have been processed by both systems.
-        > If the file has been processed by both systems, the flat file
-        > will be moved to an archive location. If the file has only
-        > been processed by one system, the files will remain on the
-        > disk until the other system can process the file.
+    iii. **Archive Workflow Pipeline** reviews the control tables to determine what flat files have been processed by both systems. If the file has been processed by both systems, the flat file will be moved to an archive location. If the file has only been processed by one system, the files will remain on the disk until the other system can process the file.
 
 
 
@@ -63,29 +50,31 @@ To manage the Dual Load DR requirement to be able to process modified or new dat
 
 **SETUP**
 
--   Azure Storage account for blob data files and Azure SQL for Control DB can be created directly from Azure Portal
+
+-   Azure SQL for Control DB can be created directly via Azure Portal
 
 -   All DDLs & stored procedures (available in VS project) can be loaded on Control DB by connecting thru SQL Server management Studio. Sample DMLs are also provided for sample data loading.
+-   Azure Storage account with folders for storing Source, ToBeProcessed & Archived data files can be created directly from Azure Portal
 
 -   Creating Data Factory:
 
     Prerequisites
 
--   Visual Studio 2015
-
--   install Azure .NET SDK (from [*MS download site*](https://azure.microsoft.com/en-us/downloads/))
-
--   install NuGet packages for Azure Data Factory
-
-    -   Click Tools, point to NuGet Package Manager, and click Package Manager Console.
-
-    -   In the Nuget Package Manager Console, download the latest ADF Management nuget.
-
-            Install-Package Microsoft.Azure.Management.DataFactories
-            Install-Package Microsoft.IdentityModel.Clients.ActiveDirectory
-
--   (Optional) Download latest Azure Data Factory plugin for Visual Studio 2015 (Tools -&gt; Extensions and
-    Updates -&gt; Online -&gt; Visual Studio Gallery -&gt;Microsoft Azure Data Factory Tools for Visual Studio)
+        -   Visual Studio 2015
+        
+        -   install Azure .NET SDK (from [*MS download site*](https://azure.microsoft.com/en-us/downloads/))
+        
+        -   install NuGet packages for Azure Data Factory
+        
+            -   Click Tools, point to NuGet Package Manager, and click Package Manager Console.
+        
+            -   In the Nuget Package Manager Console, download the latest ADF Management nuget.
+        
+                    Install-Package Microsoft.Azure.Management.DataFactories
+                    Install-Package Microsoft.IdentityModel.Clients.ActiveDirectory
+        
+        -   (Optional) Download latest Azure Data Factory plugin for Visual Studio 2015 (Tools -&gt; Extensions and
+            Updates -&gt; Online -&gt; Visual Studio Gallery -&gt;Microsoft Azure Data Factory Tools for Visual Studio)
 
 <!-- -->
 
@@ -93,7 +82,7 @@ To manage the Dual Load DR requirement to be able to process modified or new dat
 
 -   To create all ADF pipelines required for Dual Load Process- Execute Init, Load Process, and Archive Pipeline programs in sequence .
 
--   Further, Scheduling the execution of pipelines based on business
+-   Scheduling the execution of pipelines based on business
     requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
     changing dataset availability section
 
@@ -108,7 +97,7 @@ Here is the link to Github Repository for the solution:
 
 Above repository has complete Visual Studio project containing
 
--   All the code artifacts for Hybrid DR implementation using Azure and Azure Data Factory .NET SDKs
+-   All the code artifacts for Hybrid DR implementation using Azure and Azure Data Factory APIs
 
 -   All the table DDLs and stored procedures for Control Database.
 
@@ -118,13 +107,13 @@ Configuration:
 
 -   The connection strings for Control database and Azure Blob storage account can be modified in DualLoadConfig.cs.
 
--   Data Factory component names, sql tables, or updates to queries can also be performed centrally in DualLoadConfig.cs.
+-   Data Factory component names, sql tables, or updates to queries can also be modified centrally in DualLoadConfig.cs.
 
 
 
-**Azure Portal snapshots for HybridDR Data Factory** 
+**Azure Portal sample snapshots for HybridDR Data Factory** 
 
-Below Sample is based on workflows for loading 2 source data files. Pipelines will grow/reduce dynamically based on number of source data files
+Below Samples are based on workflows for loading 2 source data files. # of Pipelines will grow/reduce dynamically based on number of source data files
 
 
 
