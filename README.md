@@ -67,21 +67,21 @@ To manage the Dual Load DR requirement to be able to process modified or new dat
 
     Prerequisites
 
-        -   Visual Studio 2015
-        
-        -   install Azure .NET SDK (from [*MS download site*](https://azure.microsoft.com/en-us/downloads/))
-        
-        -   install NuGet packages for Azure Data Factory
-        
-            -   Click Tools, point to NuGet Package Manager, and click Package Manager Console.
-        
-            -   In the Nuget Package Manager Console, download the latest ADF Management nuget.
-        
-                    Install-Package Microsoft.Azure.Management.DataFactories
-                    Install-Package Microsoft.IdentityModel.Clients.ActiveDirectory
-        
-        -   (Optional) Download latest Azure Data Factory plugin for Visual Studio 2015 (Tools -&gt; Extensions and
-            Updates -&gt; Online -&gt; Visual Studio Gallery -&gt;Microsoft Azure Data Factory Tools for Visual Studio)
+    -   Visual Studio 2015
+    
+    -   install Azure .NET SDK (from [*MS download site*](https://azure.microsoft.com/en-us/downloads/))
+    
+    -   install NuGet packages for Azure Data Factory
+    
+        -   Click Tools, point to NuGet Package Manager, and click Package Manager Console.
+    
+        -   In the Nuget Package Manager Console, download the latest ADF Management nuget.
+    
+                Install-Package Microsoft.Azure.Management.DataFactories
+                Install-Package Microsoft.IdentityModel.Clients.ActiveDirectory
+    
+    -   (Optional) Download latest Azure Data Factory plugin for Visual Studio 2015 (Tools -&gt; Extensions and
+        Updates -&gt; Online -&gt; Visual Studio Gallery -&gt;Microsoft Azure Data Factory Tools for Visual Studio)
 
 <!-- -->
 
@@ -164,7 +164,7 @@ Below Samples are based on workflows for loading 2 source data files. # of Pipel
 Design and implementation of DR framework using SSIS by Andy Isley, SA, DIGP
 [*https://github.com/aisley/Hybrid_DR_APS_SQLDW.git*](https://github.com/aisley/Hybrid_DR_APS_SQLDW.git)
 
-Data Factory API
+Data Factory API                                
 [*https://msdn.microsoft.com/en-us/library/microsoft.azure.management.datafactories.aspx*](https://msdn.microsoft.com/en-us/library/microsoft.azure.management.datafactories.aspx)
 
 Link for getting the ADF SDK as nugget package [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
