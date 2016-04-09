@@ -29,11 +29,18 @@ b.  A central Monitoring or control DB process is used to keep track of when eac
 
 c.  The dual load process implemented with 3 separate workflows or base pipelines:
 
-    i.  **Init Workflow Pipeline** begins the dual load process by retrieving a list of flat files stored in a directory and recording the location and filename in the control db.
+    i.  **Init Workflow Pipeline** begins the dual load process by retrieving a list of flat files
+    stored in a directory and recording the location and filename in the control db.
 
-    ii. **Load Process Workflow Pipeline** reads the central control DB and determines the flat files that need to be loaded into the PDW. Should one of the PDW go offline, no steps will need to be taken. When the PDW comes back online, the workflow will process the files that have not been processed for the given PDW.
+    ii. **Load Process Workflow Pipeline** reads the central control DB and determines the flat files
+    that need to be loaded into the PDW. Should one of the PDW go offline, no steps will need to
+    be taken. When the PDW comes back online, the workflow will process the files that have not been
+    processed for the given PDW.
 
-    iii. **Archive Workflow Pipeline** reviews the control tables to determine what flat files have been processed by both systems. If the file has been processed by both systems, the flat file will be moved to an archive location. If the file has only been processed by one system, the files will remain on the disk until the other system can process the file.
+    iii. **Archive Workflow Pipeline** reviews the control tables to determine what flat files have
+    been processed by both systems. If the file has been processed by both systems, the flat file will
+    be moved to an archive location. If the file has only been processed by one system, the files will
+    remain on the disk until the other system can process the file.
 
 
 
