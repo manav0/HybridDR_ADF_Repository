@@ -59,9 +59,9 @@ But, ADF in current form lacks out of the box support for: (1) dynamic datasets 
 **Solution:**
 To enable ADF ingesting new data files from source with every extract; N processing Pipelines along with datasets needed to be created dynamically (N being dynamic number based on # of new files at source), and then being able to intervene in the flow for passing the state to subsequent activities within a pipeline
 
-Various ADF creation methods were evaluated. Creating ADF thru Azure Portal, or with Azure PowerShell, or using Visual Studio ADF plugins all had limitations as they work only with pre-defined input data. 
+Various ADF creation methods were evaluated. Creating ADF thru Azure Portal, or with Azure PowerShell, or using Visual Studio ADF plugins all had limitations as they work primarily with pre-defined input datasets. 
 
-It needed a custom approach to meet these special requirements. The dynamicity of the solution was achieved by creating Data Factory, and all its components programmatically using Data Factory API and Azure APIs. 
+It needed a custom approach to meet these special requirements. The dynamicity of the solution was achieved by creating Data Factory, and all its components programmatically using Data Factory API and Azure APIs. The program would initially query ETL control configurations, and source data files extracted and based on that generate processing pipelines.
 
 
 
