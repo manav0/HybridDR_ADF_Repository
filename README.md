@@ -67,7 +67,8 @@ It needed a custom approach to meet these special requirements. The dynamicity o
 **SETUP**
 
 
--   Azure SQL for Control DB can be created directly via Azure Portal
+-   You will need an Azure account, access to the new Azure Portal and Visual Studio installed and configured on your machine. The framework uses an Azure SQL database, Azure Blob storage and of course Azure Data Factory. 
+-   Azure SQL database for Control DB can be created directly via Azure Portal
 
 -   All DDLs & stored procedures (available in VS project) can be loaded on Control DB by connecting thru SQL Server management Studio. Sample DMLs are also provided for sample data loading.
 -   Azure Storage account with folders for storing Source, ToBeProcessed & Archived data files can be created directly from Azure Portal
@@ -102,6 +103,9 @@ It needed a custom approach to meet these special requirements. The dynamicity o
     requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
     changing dataset availability section
 
+-   For brevity, I won’t go into details of Utility programs for ADF login, ADF output monitoring, datasets, activities, and Azure        resources outside of the Data Factory. They can be reviewed directly from code base.
+
+
 
  
  
@@ -134,7 +138,7 @@ Below Samples are based on workflows for loading 2 source data files. # of Pipel
 
 
 
-**HybridDR Data Factory:** 
+**HybridDR Data Factory dashboard:** 
 
 ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/1.png)
 
