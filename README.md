@@ -133,6 +133,20 @@ Configuration:
 
 
 
+**REFERENCES**
+
+Design and implementation of DR framework using SSIS by Andy Isley, SA, DIGP
+[*https://github.com/aisley/Hybrid_DR_APS_SQLDW.git*](https://github.com/aisley/Hybrid_DR_APS_SQLDW.git)
+
+Data Factory API                                
+[*https://msdn.microsoft.com/en-us/library/microsoft.azure.management.datafactories.aspx*](https://msdn.microsoft.com/en-us/library/microsoft.azure.management.datafactories.aspx)
+
+Link for getting the ADF SDK as nugget package [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
+
+Basic Example for ‘create and update’ of ADF components programmatically [*https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/*](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/)
+
+
+
 **Azure Portal sample snapshots for HybridDR Data Factory** 
 
 Using the Azure Portal, you can browse the completed Data Factory using the diagram view to see the final result. Below Samples are based on workflows for loading 2 source data files. # of Pipelines will grow/reduce dynamically based on number of source data files
@@ -172,16 +186,3 @@ Using the Azure Portal, you can browse the completed Data Factory using the diag
 **Archive Pipeline:**
 
  ![alt tag](https://github.com/manav0/HybridDR_ADF_Repository/blob/master/images/5.png)
-
-
-**REFERENCES**
-
-Design and implementation of DR framework using SSIS by Andy Isley, SA, DIGP
-[*https://github.com/aisley/Hybrid_DR_APS_SQLDW.git*](https://github.com/aisley/Hybrid_DR_APS_SQLDW.git)
-
-Data Factory API                                
-[*https://msdn.microsoft.com/en-us/library/microsoft.azure.management.datafactories.aspx*](https://msdn.microsoft.com/en-us/library/microsoft.azure.management.datafactories.aspx)
-
-Link for getting the ADF SDK as nugget package [*https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/*](https://www.nuget.org/packages/Microsoft.Azure.Management.DataFactories/)
-
-Basic Example for ‘create and update’ of ADF components programmatically [*https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/*](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-data-factories-programmatically/)
