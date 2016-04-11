@@ -30,8 +30,9 @@ namespace HybridDR_ADF
             LoadProcessPipeline loadProcessPipeline = new LoadProcessPipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
-            util.tearDown(client, DualLoadConfig.PIPELINE_LOADPROCESS);
+            DataFactoryManagementClient client = ADFLoginController.createDataFactoryManagementClient();
+            util.setADFMonitor(new ADFOutputMonitor(client));
+            //util.tearDown(client, DualLoadConfig.PIPELINE_LOADPROCESS);
             DualLoadDatasets datasets = loadProcessPipeline.createDatasets(client);
             util.setDatasets(datasets);
             loadProcessPipeline.createPipelines(util, DualLoadConfig.PIPELINE_LOADPROCESS);
@@ -73,7 +74,7 @@ namespace HybridDR_ADF
                 }
             }
 
-            for (int i = 0; i < controlIdList.Count; i++)
+            for (int i = 0; i < controlIdList.Count; i++) //i represents # of Load Process pipelines that will get created
             {
                 DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 1, 0, 0, 0, DateTimeKind.Local).AddMinutes(60);
                 DateTime PipelineActivePeriodEndTime = PipelineActivePeriodStartTime.AddMinutes(60);
@@ -106,7 +107,7 @@ namespace HybridDR_ADF
                              }
                          }
                              );
-                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i);
+                util.getADFMonitor().showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_LOAD_2_SQLDUMMY + "_" + i);
             }
         }
     }

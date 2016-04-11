@@ -40,8 +40,10 @@ namespace HybridDR_ADF
             InitPipeline initPipeline = new InitPipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
+            DataFactoryManagementClient client = ADFLoginController.createDataFactoryManagementClient();
             //util.tearDown(client, DualLoadConfig.PIPELINE_INIT);
+
+            util.setADFMonitor(new ADFOutputMonitor(client));
 
             initPipeline.executeDBQuery_Step1();
             initPipeline.executeStorageQuery_Step2();
@@ -105,7 +107,7 @@ namespace HybridDR_ADF
         private void createPipelines(DualLoadUtil util, String basePipelineName)
         {
             DualLoadActivities dLActivities = new DualLoadActivities();
-            int i = 0;
+            int i = 0; //i represents # of Init pipelines that will get created
             foreach (string file in SOURCE_FOLDER_FILELIST)
             {
                 DateTime PipelineActivePeriodStartTime = new DateTime(2014, 8, 9, 1, 0, 0, 0, DateTimeKind.Local).AddMinutes(60);
@@ -145,7 +147,7 @@ namespace HybridDR_ADF
                                          }
                                      }
                                          );
-                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName);
+                util.getADFMonitor().showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ToBeProcessedFolder + "_" + pipelineName);
                 i++;
                 storageController.deleteBlob(CONTROL_PROCESS, SOURCE_FOLDER_PATH, file);
             }

@@ -35,8 +35,9 @@ namespace HybridDR_ADF
             ArchivePipeline archivePipeline = new ArchivePipeline();
             DualLoadUtil util = new DualLoadUtil();
 
-            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
+            DataFactoryManagementClient client = ADFLoginController.createDataFactoryManagementClient();
             //util.tearDown(client, DualLoadConfig.PIPELINE_ARCHIVE);
+            util.setADFMonitor(new ADFOutputMonitor(client));
 
             DualLoadDatasets datasets = archivePipeline.createDatasets(client);
             util.setDatasets(datasets);
@@ -117,7 +118,7 @@ namespace HybridDR_ADF
                          }
                      }
                          );
-                util.showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ArchivedFolder + "_" + i);
+                util.getADFMonitor().showInteractiveOutput(PipelineActivePeriodStartTime, PipelineActivePeriodEndTime, DualLoadConfig.DATASET_ArchivedFolder + "_" + i);
                 i++;
 
                 storageController.deleteBlob(CONTROL_PROCESS, TOBEPROCESSED_FOLDER_PATH, FILENAME);

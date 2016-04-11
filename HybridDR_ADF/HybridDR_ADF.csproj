@@ -121,13 +121,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzureLoginController.cs" />
+    <Compile Include="ADFOutputMonitor.cs" />
+    <Compile Include="ADFLoginController.cs" />
     <Compile Include="AzureStorageController.cs" />
     <Compile Include="DualLoadConfig.cs" />
     <Compile Include="DualLoadDatasets.cs" />
     <Compile Include="ArchivePipeline.cs" />
     <Compile Include="AzureSQLController.cs" />
-    <Compile Include="DualLoadMain.cs" />
     <Compile Include="DualLoadActivities.cs" />
     <Compile Include="LoadProcessPipeline.cs" />
     <Compile Include="InitPipeline.cs" />

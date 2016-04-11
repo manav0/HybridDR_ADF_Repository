@@ -15,13 +15,13 @@ namespace HybridDR_ADF
     /**
      * Logging into Azure & creating Data Factory Management Client
      */
-    class AzureLoginController
+    class ADFLoginController
     {
         private static DataFactoryManagementClient client;
 
         static void Main(string[] args)
         {
-            AzureLoginController loginController = new AzureLoginController();
+            ADFLoginController loginController = new ADFLoginController();
         }
 
         public DataFactoryManagementClient getClient()
