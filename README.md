@@ -105,7 +105,7 @@ It needed a custom approach to meet these special requirements. The dynamicity o
     requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
     changing dataset availability section
 
--   For brevity, I won’t go into details of Utility programs for ADF login, ADF output monitoring, datasets, activities, and Azure        resources outside of the Data Factory. They can be reviewed directly from code base.
+-   Additionally, source code provides utility programs for ADF login, ADF output monitoring, generating ADF components, and accessing Azure resources outside of the Data Factory.
 
 
 
