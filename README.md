@@ -10,6 +10,8 @@ approach implementation.
 
 The Dual Load solution ensures loading and step-by-step tracking of each flat data file into both the Primary & Secondary APS systems with an ETL workflow implementation using Azure Data Factory (ADF)
 
+ADF, being managed cloud service, provides in-built capabilities for easy monitoring and logging with not only robust access to the details of every process or workflow step in your Data Factory but out of the box alerting in the event that something does go awry. ADF is pretty flexible too in setting up custom workflow schedules.
+
 
 
 **DUAL LOAD DR FRAMEWORK**
@@ -95,7 +97,7 @@ It needed a custom approach to meet these special requirements. The dynamicity o
 
 <!-- -->
 
--   To create DR Data Factory or tear down existing factory & defined Linked Services (connection managers to data sources), use AzureDataFactoryFoundry program 
+-   To create DR Data Factory or tear down existing factory & define Linked Services (connection managers to data sources) for our workflow, use AzureDataFactoryFoundry program 
 
 -   To create all ADF pipelines required for Dual Load Process- Execute Init, Load Process, and Archive Pipeline programs in sequence .
 
@@ -133,7 +135,7 @@ Configuration:
 
 **Azure Portal sample snapshots for HybridDR Data Factory** 
 
-Below Samples are based on workflows for loading 2 source data files. # of Pipelines will grow/reduce dynamically based on number of source data files
+Using the Azure Portal, you can browse the completed Data Factory using the diagram view (see below) to see the final result. Below Samples are based on workflows for loading 2 source data files. # of Pipelines will grow/reduce dynamically based on number of source data files
 
 
 
