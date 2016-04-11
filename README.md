@@ -47,10 +47,19 @@ c.  The dual load process implemented with 3 separate workflows or base pipeline
 
 **DESIGN CHALLENGES using ADF**
 
-DR framework processing should not be limited to pre-defined source data but must be able to process new flat files originating from source system. For this to be accomplished using ADF technology- ADF components including pipelines, activities and datasets need to be created specific to each input data files. But, ADF in current form lacks out of the box support for: (1) dynamic datasets or pipelines generated based on input data, (2) looping constructs for processing multiple pipelines in a loop, or (3) passing state or variables across activities. Per ADF product team- "These features (looping, state passing, etc) are in design phases as part of us expanding the ADF app model. Too early to say yet though re: release dates, etc. "
+DR framework requires dual load workflows not just limited to pre-defined source data but be flexible enough to process/load any new flat files from source system with every extract. Also, workflows required to pass the variables to subsequent activities within a pipeline in addition to data flow.
+
+For this to be accomplished using ADF technology- ADF components including pipelines, activities and datasets need to be created specific to each input data files. 
+
+But, ADF in current form lacks out of the box support for: (1) dynamic datasets generated based on input data, (2) looping constructs for creating N pipelines needed for processing N data files, or (3) passing state or variables across activities. Per ADF product team- "These features (looping, state passing, etc) are in design phases as part of us expanding the ADF app model. Too early to say yet though re: release dates, etc. "
+
 
 **Solution:**
-To manage the Dual Load DR requirement to be able to process modified or new data files at source dynamically I needed to be able to create pipelines based on input, “unroll” the loop into N pipelines (N being dynamic number based on new files at source), and pass the state to subsequent activities. Various ADF creation methods were evaluated. Creating ADF thru Azure Portal or Azure PowerShell or Visual Studio ADF plugins all had limitations as they work only with pre-defined input data. The dynamicity of the solution could only be accomplished by creating/updating/monitoring Data Factory, Pipelines, Activities, Datasets & Linked Services programmatically using Data Factory API)
+To enable ADF ingesting new data files from source with every extract; N processing Pipelines along with datasets needed to be created dynamically (N being dynamic number based on # of new files at source), and then being able to intervene in the flow for passing the state to subsequent activities within a pipeline
+
+Various ADF creation methods were evaluated. Creating ADF thru Azure Portal, or with Azure PowerShell, or using Visual Studio ADF plugins all had limitations as they work only with pre-defined input data. 
+
+It needed a custom approach to meet these special requirements. The dynamicity of the solution was achieved by creating Data Factory, and all its components programmatically using Data Factory API and Azure APIs. 
 
 
 
