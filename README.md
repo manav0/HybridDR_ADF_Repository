@@ -85,11 +85,11 @@ To manage the Dual Load DR requirement to be able to process modified or new dat
 
 <!-- -->
 
--   For create new Data Factory or tear down existing factory & Linked Services, use AzureDataFactoryFoundry program
+-   To create DR Data Factory or tear down existing factory & defined Linked Services (connection managers to data sources), use AzureDataFactoryFoundry program 
 
 -   To create all ADF pipelines required for Dual Load Process- Execute Init, Load Process, and Archive Pipeline programs in sequence .
 
--   Scheduling the execution of pipelines based on business
+-   Defining the schedule for the execution of pipelines based on business
     requirement can be done by either: (1) modifying pipeline start and end times, or (2) scheduling section of activities, or (3)
     changing dataset availability section
 
@@ -112,9 +112,9 @@ Configuration:
 
 -   The same code can be configured for different Azure subscriptions by modifying the Subscription & Tenant Ids config fields in App.config.
 
--   The connection strings for Control database and Azure Blob storage account can be modified in DualLoadConfig.cs.
+-   The connection strings for Control database and Azure Blob storage account can be modified in DualLoadConfigs.cs.
 
--   Data Factory component names, sql tables, or updates to queries can also be modified centrally in DualLoadConfig.cs.
+-   Data Factory component names, sql tables, or updates to queries can also be modified centrally in DualLoadConfigs.cs.
 
 
 
