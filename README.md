@@ -135,7 +135,7 @@ Configuration:
 
 **Azure Portal sample snapshots for HybridDR Data Factory** 
 
-Using the Azure Portal, you can browse the completed Data Factory using the diagram view (see below) to see the final result. Below Samples are based on workflows for loading 2 source data files. # of Pipelines will grow/reduce dynamically based on number of source data files
+Using the Azure Portal, you can browse the completed Data Factory using the diagram view to see the final result. Below Samples are based on workflows for loading 2 source data files. # of Pipelines will grow/reduce dynamically based on number of source data files
 
 
 
