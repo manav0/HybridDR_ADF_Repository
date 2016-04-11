@@ -47,7 +47,7 @@ c.  The dual load process implemented with 3 separate workflows or base pipeline
 
 **DESIGN CHALLENGES using ADF**
 
-DR framework requires dual load workflows not just limited to pre-defined source data but be flexible enough to process/load any new flat files from source system with every extract. Also, workflows required to pass the variables to subsequent activities within a pipeline in addition to data flow.
+DR framework requires dual load workflows not just limited to pre-defined source data but be flexible enough to process/load any new flat files from source system with every extract. Also in addition to data flow, framework workflows required to pass the variables to subsequent steps.
 
 For this to be accomplished using ADF technology- ADF components including pipelines, activities and datasets need to be created specific to each input data files. 
 
