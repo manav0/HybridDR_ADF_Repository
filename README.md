@@ -10,7 +10,7 @@ approach implementation.
 
 The Dual Load solution performs step-by-step tracking of each source data file and ensures all files are loaded, without compromising on data integrity, into both the Primary & Secondary APS systems with an ETL workflow automation using Azure Data Factory (ADF). 
 
-ADF, being managed cloud service, provides rich in-built capabilities for easy monitoring and logging with not only robust access to the details of every process or workflow step in your Data Factory but out of the box alerting in the event that something does go awry. ADF is pretty flexible too in setting up custom workflow schedules.
+ADF, being managed cloud service, provides in-built capabilities for easy monitoring and logging with not only robust access to the details of every process or workflow step in your Data Factory but out of the box alerting in the event that something does go awry. ADF additionally provides convenient diagram views within Azure Portal to analyze workflows. ADF is also pretty flexible in setting up custom workflow schedules.
 
 
 
