@@ -61,7 +61,7 @@ To enable ADF ingesting new data files from source with every extract; N process
 
 Various ADF creation methods were evaluated. Creating ADF thru Azure Portal, or with Azure PowerShell, or using Visual Studio ADF plugins all had limitations as they work primarily with pre-defined input datasets. 
 
-It needed a custom approach to meet these special requirements. The dynamicity of the solution was achieved by creating Data Factory, and all its components programmatically using Data Factory API and Azure APIs. The program would initially query ETL control configurations, and source data files extracted and based on that generate processing pipelines via ADF APIs.
+It needed a custom approach to meet these special requirements. The dynamicity of the solution was achieved by creating Data Factory, and all its components programmatically using Data Factory and Azure APIs. The program would initially query ETL control configurations, and source data files extracted and based on that generate processing pipelines via ADF APIs.
 
 
 
