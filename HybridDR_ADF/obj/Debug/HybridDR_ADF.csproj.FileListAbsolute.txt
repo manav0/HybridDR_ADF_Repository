@@ -104,5 +104,6 @@ C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\Hy
 C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\HybridDR_ADF_Repository\HybridDR_ADF\bin\Debug\zh-Hans\System.Spatial.resources.dll
 C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\HybridDR_ADF_Repository\HybridDR_ADF\bin\Debug\zh-Hant\System.Spatial.resources.dll
 C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\HybridDR_ADF_Repository\HybridDR_ADF\obj\Debug\HybridDR_ADF.csproj.App.config
+C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\HybridDR_ADF_Repository\HybridDR_ADF\obj\Debug\HybridDR_ADF.csprojResolveAssemblyReference.cache
 C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\HybridDR_ADF_Repository\HybridDR_ADF\obj\Debug\HybridDR_ADF.exe
 C:\Users\manavgup\Dropbox\MyStuff\Microsoft-job\Data Insights\IP\HybridDR_ADF\HybridDR_ADF_Repository\HybridDR_ADF\obj\Debug\HybridDR_ADF.pdb

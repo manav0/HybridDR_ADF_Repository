@@ -124,14 +124,14 @@
     <Compile Include="ADFOutputMonitor.cs" />
     <Compile Include="ADFLoginController.cs" />
     <Compile Include="AzureStorageController.cs" />
-    <Compile Include="DualLoadConfig.cs" />
+    <Compile Include="DualLoadConfigs.cs" />
     <Compile Include="DualLoadDatasets.cs" />
-    <Compile Include="ArchivePipeline.cs" />
     <Compile Include="AzureSQLController.cs" />
     <Compile Include="DualLoadActivities.cs" />
-    <Compile Include="LoadProcessPipeline.cs" />
-    <Compile Include="InitPipeline.cs" />
     <Compile Include="DualLoadUtil.cs" />
+    <Compile Include="PipelineArchive.cs" />
+    <Compile Include="PipelineInit.cs" />
+    <Compile Include="PipelineLoadProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
