@@ -1,0 +1,62 @@
+{
+  "name": "Pipeline-Init_0",
+  "properties": {
+    "description": "DualLoadInit Pipeline will pull all files to be processed in central location",
+    "activities": [
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "dbo.usp_RecordFilesToBeProcessed",
+          "storedProcedureParameters": {
+            "@ETLControlID": "1",
+            "@FileName": "sample.csv"
+          }
+        },
+        "outputs": [
+          {
+            "name": "Dataset-Init-SqlDummy_0"
+          }
+        ],
+        "scheduler": {
+          "frequency": "Hour",
+          "interval": 1
+        },
+        "name": "Activity-Init-3_0"
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "BlobSource"
+          },
+          "sink": {
+            "type": "BlobSink",
+            "copyBehavior": "PreserveHierarchy",
+            "writeBatchSize": 0,
+            "writeBatchTimeout": "00:00:00"
+          }
+        },
+        "inputs": [
+          {
+            "name": "Dataset-SourceFolder_0"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "Dataset-ToBeProcessedFolder_Pipeline-Init_0"
+          }
+        ],
+        "scheduler": {
+          "frequency": "Hour",
+          "interval": 1
+        },
+        "name": "Activity-Init-4_0"
+      }
+    ],
+    "start": "2014-08-09T04:00:00Z",
+    "end": "2014-08-09T05:00:00Z",
+    "isPaused": false,
+    "pipelineMode": "Scheduled"
+  },
+  "$schema": "http://datafactories.schema.management.azure.com/internalschemas/2015-09-01/Microsoft.DataFactory.pipeline.json"
+}

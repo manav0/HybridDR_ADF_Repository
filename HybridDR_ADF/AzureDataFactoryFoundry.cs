@@ -14,7 +14,8 @@ namespace HybridDR_ADF
             AzureDataFactoryFoundry adfFoundry = new AzureDataFactoryFoundry();
             DualLoadUtil util = new DualLoadUtil();
             //main.tearDown(util);
-            adfFoundry.initialize(util);
+            //adfFoundry.test();
+            //adfFoundry.initialize(util);
         }
 
         public void initialize(DualLoadUtil util)
@@ -27,11 +28,17 @@ namespace HybridDR_ADF
         public void tearDown(DualLoadUtil util)
         {
             Console.WriteLine("Tearing down " + DualLoadConfig.DATAFACTORY_Name);
-            DataFactoryManagementClient client = AzureLoginController.createDataFactoryManagementClient();
+            DataFactoryManagementClient client = ADFLoginController.createDataFactoryManagementClient();
             client.DataFactories.Delete(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name);
             //util.teardown(client, dualloadconfig.pipeline_init);
             //util.teardown(client, dualloadconfig.pipeline_loadprocess);
             //util.teardown(client, dualloadconfig.pipeline_archive);
+        }
+
+        private void test()
+        {
+            ADFLoginController.createDataFactoryManagementClient();
+            Console.ReadKey();
         }
     }
 }

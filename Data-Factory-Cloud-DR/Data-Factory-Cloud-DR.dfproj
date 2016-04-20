@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>44330208-4f3e-4db8-b111-c9c9b96b21a7</ProjectGuid>
+    <OutputType>File</OutputType>
+    <AssemblyName>DataFactory</AssemblyName>
+    <ApiVersion>2015-09-01</ApiVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <Name>Data-Factory-Cloud-DR</Name>
+    <RootNamespace>Data-Factory-Cloud-DR</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ADFConfigFileToPublish>
+    </ADFConfigFileToPublish>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Script Include="Dataset-Archive-1-SqlDummy_0.json" />
+    <Script Include="Dataset-Archive-1-SqlDummy_1.json" />
+    <Script Include="Dataset-ArchivedFolder_0.json" />
+    <Script Include="Dataset-ArchivedFolder_1.json" />
+    <Script Include="Dataset-ETLControlDetail.json" />
+    <Script Include="Dataset-Init-SqlDummy_0.json" />
+    <Script Include="Dataset-Init-SqlDummy_1.json" />
+    <Script Include="Dataset-Load-1-SqlDummy_0.json" />
+    <Script Include="Dataset-Load-1-SqlDummy_1.json" />
+    <Script Include="Dataset-Load-2-SqlDummy_0.json" />
+    <Script Include="Dataset-Load-2-SqlDummy_1.json" />
+    <Script Include="Dataset-SourceFolder_0.json" />
+    <Script Include="Dataset-SourceFolder_1.json" />
+    <Script Include="Dataset-ToBeProcessedFolder_Pipeline-Archive_0.json" />
+    <Script Include="Dataset-ToBeProcessedFolder_Pipeline-Archive_1.json" />
+    <Script Include="Dataset-ToBeProcessedFolder_Pipeline-Init_0.json" />
+    <Script Include="Dataset-ToBeProcessedFolder_Pipeline-Init_1.json" />
+    <Script Include="Linked-Service-BlobStore.json" />
+    <Script Include="Linked-Service-ControlDB.json" />
+    <Script Include="Pipeline-Archive_0.json" />
+    <Script Include="Pipeline-Archive_1.json" />
+    <Script Include="Pipeline-Init_0.json" />
+    <Script Include="Pipeline-Init_1.json" />
+    <Script Include="Pipeline-LoadProcess_0.json" />
+    <Script Include="Pipeline-LoadProcess_1.json" />
+  </ItemGroup>
+  <Import Project="$(AppData)\Microsoft\DataFactory Tools for Visual Studio\MsBuild\1.0\DataFactory.targets" />
+</Project>

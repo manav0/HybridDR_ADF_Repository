@@ -11,49 +11,14 @@ namespace HybridDR_ADF
     */
     class AzureSQLController
     {
-        static void Main(string[] args)
-        {
-            AzureSQLController sqlController = new AzureSQLController();
-            sqlController.executeDBQuery_Step1();
-            Console.ReadKey();
-        }
 
-        private void executeDBQuery_Step1()
-        {
-            int CONTROLDETAIL_ID = 0;
-            String FILENAME = "", ARCHIVE_FOLDER_PATH = "";
-
-            List<Dictionary<string, object>> resultList = getResultList(DualLoadConfig.QUERY_ARCHIVE_1);
-
-            List<Object> controlIdList = new List<Object>();
-            foreach (Dictionary<string, object> result in resultList)
-            {
-                foreach (KeyValuePair<string, object> kvp in result)
-                {
-                    string key = kvp.Key;
-                    object value = kvp.Value;
-                    //Console.WriteLine("Key: " + key + ", value: " + value);
-                    CONTROLDETAIL_ID = ("ETLControlDetailID".Equals(key)) ? (int)value : CONTROLDETAIL_ID;
-                    FILENAME = ("FileName".Equals(key)) ? value.ToString() : FILENAME;
-                    ARCHIVE_FOLDER_PATH = ("ArchivePath".Equals(key)) ? value.ToString() : ARCHIVE_FOLDER_PATH;
-                    Console.WriteLine("CONTROLDETAIL_ID = " + CONTROLDETAIL_ID);
-                    Console.WriteLine("FILENAME = " + FILENAME);
-                    Console.WriteLine("ARCHIVE_FOLDER_PATH = " + ARCHIVE_FOLDER_PATH);
-                }
-            }
-        }
-
-        public List<Dictionary<String, object>> getResultList(String queryString)
+        public List<Dictionary<String, object>> executeSQLQuery(String queryString, String connectionString)
         {
             Console.WriteLine("Processing Query: " + queryString);
-            SqlConnection connection = new SqlConnection(DualLoadConfig.CONNECTION_STRING_ControlDB);
+            SqlConnection connection = new SqlConnection(connectionString);
             var command = connection.CreateCommand();
             command.CommandText = queryString;
-
             //command.Parameters.AddWithValue("@Name", "SQL Server Express");
-            //command.Parameters.AddWithValue("@Number", "SQLEXPRESS1");
-            //command.Parameters.AddWithValue("@Cost", 0);
-            //command.Parameters.AddWithValue("@Price", 0);
 
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -83,6 +48,41 @@ namespace HybridDR_ADF
             return (resultList);
         }
 
+        ////main method for testing sql queries
+        static void Main(string[] args)
+        {
+            AzureSQLController sqlController = new AzureSQLController();
+            sqlController.executeDBQuery_Step1();
+            Console.ReadKey();
+        }
+
+        //unused method for testing
+        private void executeDBQuery_Step1()
+        {
+            int CONTROLDETAIL_ID = 0;
+            String FILENAME = "", ARCHIVE_FOLDER_PATH = "";
+
+            List<Dictionary<string, object>> resultList = executeSQLQuery(DualLoadConfig.QUERY_ARCHIVE_1.Replace("$ControlProcess", "'dimEmployee'"), DualLoadConfig.CONNECTION_STRING_ControlDB);
+
+            List<Object> controlIdList = new List<Object>();
+            foreach (Dictionary<string, object> result in resultList)
+            {
+                foreach (KeyValuePair<string, object> kvp in result)
+                {
+                    string key = kvp.Key;
+                    object value = kvp.Value;
+                    //Console.WriteLine("Key: " + key + ", value: " + value);
+                    CONTROLDETAIL_ID = ("ETLControlDetailID".Equals(key)) ? (int)value : CONTROLDETAIL_ID;
+                    FILENAME = ("FileName".Equals(key)) ? value.ToString() : FILENAME;
+                    ARCHIVE_FOLDER_PATH = ("ArchivePath".Equals(key)) ? value.ToString() : ARCHIVE_FOLDER_PATH;
+                    Console.WriteLine("CONTROLDETAIL_ID = " + CONTROLDETAIL_ID);
+                    Console.WriteLine("FILENAME = " + FILENAME);
+                    Console.WriteLine("ARCHIVE_FOLDER_PATH = " + ARCHIVE_FOLDER_PATH);
+                }
+            }
+        }
+
+        //unused method
         private void init1(String queryString)
         {
             using (SqlConnection connection = new SqlConnection(DualLoadConfig.CONNECTION_STRING_ControlDB))

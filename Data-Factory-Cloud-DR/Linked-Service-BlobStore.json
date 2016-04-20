@@ -1,0 +1,10 @@
+{
+  "name": "Linked-Service-BlobStore",
+  "properties": {
+    "type": "AzureStorage",
+    "typeProperties": {
+      "connectionString": "DefaultEndpointsProtocol=https;AccountName=clouddrstorage;AccountKey=**********"
+    }
+  },
+  "$schema": "http://datafactories.schema.management.azure.com/internalschemas/2015-09-01/Microsoft.DataFactory.linkedservice.json"
+}

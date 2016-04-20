@@ -1,0 +1,16 @@
+{
+  "name": "Dataset-Load-2-SqlDummy_1",
+  "properties": {
+    "published": false,
+    "type": "AzureSqlTable",
+    "linkedServiceName": "Linked-Service-ControlDB",
+    "typeProperties": {
+      "tableName": "Load_2_Dummy"
+    },
+    "availability": {
+      "frequency": "Hour",
+      "interval": 1
+    }
+  },
+  "$schema": "http://datafactories.schema.management.azure.com/internalschemas/2015-09-01/Microsoft.DataFactory.table.json"
+}

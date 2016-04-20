@@ -59,7 +59,7 @@ namespace HybridDR_ADF
                         resource: ConfigurationManager.AppSettings["WindowsManagementUri"],
                         clientId: ConfigurationManager.AppSettings["AdfClientId"],
                         redirectUri: new Uri(ConfigurationManager.AppSettings["RedirectUri"]),
-                        promptBehavior: PromptBehavior.Always);
+                        promptBehavior: PromptBehavior.Always);//asks service to show user the authentication page which gives them chance to authenticate as a different user; 	The user will be prompted for credentials even if there is a token that meets the requirements already in the cache.
                 }
                 catch (Exception threadEx)
                 {
@@ -74,7 +74,9 @@ namespace HybridDR_ADF
 
             if (result != null)
             {
-                return result.AccessToken;
+                String accessToken = result.AccessToken;
+                //Console.WriteLine("Access Token: " + accessToken);
+                return accessToken;
             }
 
             throw new InvalidOperationException("Failed to acquire token");

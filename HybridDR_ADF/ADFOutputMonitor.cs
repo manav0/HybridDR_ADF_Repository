@@ -17,7 +17,7 @@ using Microsoft.Azure.Management.DataFactories.Common.Models;
 namespace HybridDR_ADF
 {
     /**
-     * Monitoring ADF output dataset slices
+     * ADF Monitoring utility to monitor ADF PipelineOutput
      */
     class ADFOutputMonitor
     {
@@ -26,19 +26,21 @@ namespace HybridDR_ADF
         {
             this.client = client;
         }
-        public void showInteractiveOutput(DateTime PipelineActivePeriodStartTime, DateTime PipelineActivePeriodEndTime, String outputDataSetName)
+
+        //polling for READY/FAILED status of a data slice of the output dataset
+        public void monitorPipelineOutput(DateTime PipelineActivePeriodStartTime, DateTime PipelineActivePeriodEndTime, String outputDataset)
         {
             // Pulling status within a timeout threshold
             DateTime start = DateTime.Now;
             bool done = false;
 
-            while (DateTime.Now - start < TimeSpan.FromMinutes(5) && !done)
+            while (DateTime.Now - start < TimeSpan.FromMinutes(5) && !done) //times out after 5 minutes
             {
                 Console.WriteLine("Pulling the slice status");
                 // wait before the next status check
-                Thread.Sleep(1000 * 12);
+                Thread.Sleep(1000 * 12);//polls every 12 second
 
-                var datalistResponse = client.DataSlices.List(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, outputDataSetName,
+                var datalistResponse = client.DataSlices.List(DualLoadConfig.RESOURCEGROUP_Name, DualLoadConfig.DATAFACTORY_Name, outputDataset,
                 new DataSliceListParameters()
                 {
                     DataSliceRangeStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString(),
@@ -64,16 +66,22 @@ namespace HybridDR_ADF
             // give it a few minutes for the output slice to be ready
             Console.WriteLine("\nGive it a few minutes for the output slice to be ready and press any key.");
             Console.ReadKey();
+            showInteractiveOutput(PipelineActivePeriodStartTime, outputDataset);
 
+        }
+
+        //OPTIONAL- code to get run details for a data slice
+        private void showInteractiveOutput(DateTime PipelineActivePeriodStartTime, String outputDataset)
+        {
             var datasliceRunListResponse = client.DataSliceRuns.List(
-                    DualLoadConfig.RESOURCEGROUP_Name,
-                    DualLoadConfig.DATAFACTORY_Name,
-                    outputDataSetName,
-                    new DataSliceRunListParameters()
-                    {
-                        DataSliceStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString()
-                    }
-                );
+                                                    DualLoadConfig.RESOURCEGROUP_Name,
+                                                    DualLoadConfig.DATAFACTORY_Name,
+                                                    outputDataset,
+                                                    new DataSliceRunListParameters()
+                                                    {
+                                                        DataSliceStartTime = PipelineActivePeriodStartTime.ConvertToISO8601DateTimeString()
+                                                    }
+                                                );
 
             foreach (DataSliceRun run in datasliceRunListResponse.DataSliceRuns)
             {

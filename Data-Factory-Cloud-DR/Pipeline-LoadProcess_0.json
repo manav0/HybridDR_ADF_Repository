@@ -1,0 +1,55 @@
+{
+  "name": "Pipeline-LoadProcess_0",
+  "properties": {
+    "description": "DualLoadInit Pipeline will pull all files to be processed in central location",
+    "activities": [
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "usp_UpdateControlDetailStatus",
+          "storedProcedureParameters": {
+            "@ControlProcess": "1",
+            "@Id": "19",
+            "@Status": "2"
+          }
+        },
+        "outputs": [
+          {
+            "name": "Dataset-Load-1-SqlDummy_0"
+          }
+        ],
+        "scheduler": {
+          "frequency": "Hour",
+          "interval": 1
+        },
+        "name": "Activity-LoadProcess-3_0"
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "usp_UpdateControlDetailStatus",
+          "storedProcedureParameters": {
+            "@ControlProcess": "1",
+            "@Id": "19",
+            "@Status": "3"
+          }
+        },
+        "outputs": [
+          {
+            "name": "Dataset-Load-2-SqlDummy_0"
+          }
+        ],
+        "scheduler": {
+          "frequency": "Hour",
+          "interval": 1
+        },
+        "name": "Activity-LoadProcess-5_0"
+      }
+    ],
+    "start": "2014-08-10T04:00:00Z",
+    "end": "2014-08-10T05:00:00Z",
+    "isPaused": false,
+    "pipelineMode": "Scheduled"
+  },
+  "$schema": "http://datafactories.schema.management.azure.com/internalschemas/2015-09-01/Microsoft.DataFactory.pipeline.json"
+}
